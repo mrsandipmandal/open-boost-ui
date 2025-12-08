@@ -33,6 +33,7 @@
     ]
   },
   "extra": {
+    "class": "OpenBoost\\Composer\\Plugin",
     "open-boost": {
       "resource_packages": [
         "npm-asset/jquery",
