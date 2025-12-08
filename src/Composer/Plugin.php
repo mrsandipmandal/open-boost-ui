@@ -138,6 +138,24 @@ class Plugin implements PluginInterface
                     // Try to download via file_get_contents
                     $ctx = stream_context_create(['http' => ['timeout' => 15], 'ssl' => ['verify_peer' => false, 'verify_peer_name' => false]]);
                     $data = @file_get_contents($url, false, $ctx);
+                    if ($data === false && function_exists('curl_version')) {
+                        // Try cURL fallback with user-agent and follow redirects
+                        $ch = curl_init($url);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                        curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+                        curl_setopt($ch, CURLOPT_USERAGENT, 'OpenBoostComposerPlugin/1.0 (+https://github.com/mrsandipmandal)');
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+                        $data = curl_exec($ch);
+                        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                        $curlErr = curl_error($ch);
+                        curl_close($ch);
+                        if ($data === false || $httpCode >= 400) {
+                            $this->io->writeError("  <error>✗</error> Failed to download $url for $libName (curl: $curlErr, http: $httpCode)");
+                        }
+                    }
+
                     if ($data !== false) {
                         @file_put_contents($destFilePath, $data);
                         $this->io->write("  <comment>✓</comment> Downloaded $libName/$fileName from CDN");

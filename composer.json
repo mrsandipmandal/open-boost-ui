@@ -65,7 +65,8 @@
           "https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css"
         ],
         "chart.js": [
-          "https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"
+          "https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js",
+          "https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"
         ],
         "apexcharts": [
           "https://cdn.jsdelivr.net/npm/apexcharts@5.0.0/dist/apexcharts.min.js"
@@ -79,8 +80,10 @@
           "https://cdn.jsdelivr.net/npm/simplemde@1.11.2/dist/simplemde.min.css"
         ],
         "trix": [
-          "https://cdn.jsdelivr.net/npm/trix@2.1.15/dist/trix.min.js",
-          "https://cdn.jsdelivr.net/npm/trix@2.1.15/dist/trix.css"
+          "https://cdn.jsdelivr.net/npm/trix@2.1.15/dist/trix.js",
+          "https://cdn.jsdelivr.net/npm/trix@2.1.15/dist/trix.css",
+          "https://cdn.jsdelivr.net/npm/trix/dist/trix.js",
+          "https://cdn.jsdelivr.net/npm/trix/dist/trix.css"
         ],
         "datatables.net": [
           "https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js",
