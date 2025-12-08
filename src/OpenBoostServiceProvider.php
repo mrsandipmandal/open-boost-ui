@@ -10,6 +10,12 @@ class OpenBoostServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/open-boost.php', 'open-boost');
+        // Register Artisan commands
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                \OpenBoost\UI\Console\InstallResourcesCommand::class,
+            ]);
+        }
     }
 
     public function boot()
