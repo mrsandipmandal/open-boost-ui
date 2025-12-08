@@ -51,16 +51,29 @@ const OpenBoost = {
 
             if (lib === 'select2') {
                 // jQuery and Select2 must be loaded before this
-                if (typeof $ !== 'undefined' && $.fn.select2) {
-                    const options = {
-                        minimumResultsForSearch: search ? 0 : Infinity
-                    };
-                    if (selectTheme) {
-                        options.theme = selectTheme;
-                    }
+                if (typeof $ === 'undefined') {
+                    console.error('Select2: jQuery is not loaded. Include jQuery before open-boost-init.js');
+                    return;
+                }
+                if (!$.fn.select2) {
+                    console.error('Select2: Select2 library is not loaded. Include Select2 JS before open-boost-init.js');
+                    return;
+                }
+
+                const options = {
+                    minimumResultsForSearch: search ? 0 : Infinity,
+                    width: '100%'
+                };
+                
+                if (selectTheme) {
+                    options.theme = selectTheme;
+                }
+                
+                try {
                     $(select).select2(options);
-                } else {
-                    console.warn('Select2: jQuery or Select2 library not loaded');
+                    console.log('Select2 initialized on:', select.id);
+                } catch (e) {
+                    console.error('Select2 initialization error:', e);
                 }
             } else if (lib === 'choices') {
                 // Choices.js must be loaded before this
@@ -161,15 +174,45 @@ const OpenBoost = {
         this.initDatepickers();
         this.initCharts();
         this.initEditors();
+    },
+
+    // Debug helper - call OpenBoost.debug() in console to check setup
+    debug() {
+        console.group('🔍 OpenBoost Debug Info');
+        
+        console.group('Dependencies');
+        console.log('jQuery ($):', typeof $ !== 'undefined' ? '✅ Loaded' : '❌ NOT LOADED');
+        console.log('Select2:', typeof $ !== 'undefined' && $.fn.select2 ? '✅ Loaded' : '❌ NOT LOADED');
+        console.log('Choices:', typeof Choices !== 'undefined' ? '✅ Loaded' : '❌ NOT LOADED');
+        console.log('Flatpickr:', typeof flatpickr !== 'undefined' ? '✅ Loaded' : '❌ NOT LOADED');
+        console.log('Chart.js:', typeof Chart !== 'undefined' ? '✅ Loaded' : '❌ NOT LOADED');
+        console.log('ApexCharts:', typeof ApexCharts !== 'undefined' ? '✅ Loaded' : '❌ NOT LOADED');
+        console.log('Quill:', typeof Quill !== 'undefined' ? '✅ Loaded' : '❌ NOT LOADED');
+        console.log('SimpleMDE:', typeof SimpleMDE !== 'undefined' ? '✅ Loaded' : '❌ NOT LOADED');
+        console.log('Trix:', typeof Trix !== 'undefined' ? '✅ Loaded' : '❌ NOT LOADED');
+        console.groupEnd();
+
+        console.group('Components Found');
+        console.log('Selects:', document.querySelectorAll('[data-openboost-select]').length);
+        console.log('Datepickers:', document.querySelectorAll('[data-openboost-datepicker]').length);
+        console.log('Charts:', document.querySelectorAll('[data-openboost-chart]').length);
+        console.log('Editors:', document.querySelectorAll('[data-openboost-editor]').length);
+        console.log('Dropdowns:', document.querySelectorAll('[data-openboost-dropdown]').length);
+        console.log('Modals:', document.querySelectorAll('[data-openboost-modal]').length);
+        console.groupEnd();
+
+        console.groupEnd();
     }
 };
 
 // Auto-initialize when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
+        console.log('🚀 OpenBoost: Initializing components...');
         OpenBoost.initAll();
     });
 } else {
+    console.log('🚀 OpenBoost: Initializing components...');
     OpenBoost.initAll();
 }
 

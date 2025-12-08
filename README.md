@@ -187,21 +187,83 @@ This publishes assets to:
 
 ---
 
+## Troubleshooting
+
+### Select2/Choices Not Working
+
+**Problem:** Component renders but dropdown doesn't activate.
+
+**Solution:** Ensure you've completed all 3 setup steps, especially:
+
+1. ✅ **Published assets:**
+   ```bash
+   php artisan vendor:publish --provider=OpenBoost\\UI\\OpenBoostServiceProvider --tag=open-boost-ui
+   ```
+
+2. ✅ **Included jQuery BEFORE Select2/Choices:**
+   ```blade
+   <script src="{{ asset('vendor/open-boost/assets/jquery/jquery.min.js') }}"></script>
+   <script src="{{ asset('vendor/open-boost/assets/select2/select2.min.js') }}"></script>
+   <!-- Then OpenBoost init -->
+   <script src="{{ asset('vendor/open-boost/js/open-boost-init.js') }}"></script>
+   ```
+
+3. ✅ **Check browser console** for errors:
+   - Open DevTools (F12)
+   - Look for red error messages about jQuery or Select2
+   - The init script will log `Select2 initialized on: [element-id]` on success
+
+**Common Issues:**
+- `jQuery is not loaded` → Include jQuery before Select2
+- `Select2 library is not loaded` → Include Select2 JS before init script
+- Missing CSS → Include Select2 CSS in `<head>`
+
+**Use the debug helper:**
+```javascript
+// Open browser console (F12) and run:
+OpenBoost.debug()
+```
+
+This will show:
+- ✅/❌ Which libraries are loaded
+- How many components were found on the page
+- Whether initialization is working
+
+---
+
+### Components Not Rendering
+
+**Problem:** `<x-openBoost-select>` tag produces error.
+
+**Solution:** Ensure service provider is registered. Check `config/app.php` has auto-discovery enabled or manually register:
+
+```php
+// config/app.php
+'providers' => [
+    // ...
+    OpenBoost\UI\OpenBoostServiceProvider::class,
+],
+```
+
+---
+
+## Component Examples
+
 ### Dropdown
 
 ```blade
-<x-boost-dropdown label="Menu">
+<x-openBoost-dropdown label="Menu">
     <a href="#">Profile</a>
     <a href="#">Logout</a>
-</x-boost-dropdown>
+</x-openBoost-dropdown>
 ```
 
 ### Modal
 
 ```blade
-<x-boost-modal id="exampleModal" title="Demo Modal">
+<x-openBoost-modal id="exampleModal" title="Demo Modal">
     Modal content goes here.
-</x-boost-modal>
+</x-openBoost-modal>
 
 <button data-openBoost-modal-open="exampleModal">Open Modal</button>
 ```
@@ -209,22 +271,22 @@ This publishes assets to:
 ### Select
 
 ```blade
-<x-boost-select name="tags[]" multiple lib="choices">
+<x-openBoost-select name="tags[]" multiple lib="choices">
     <option value="php">PHP</option>
     <option value="laravel">Laravel</option>
-</x-boost-select>
+</x-openBoost-select>
 ```
 
 ### Datepicker
 
 ```blade
-<x-boost-datepicker name="event_date" mode="single" />
+<x-openBoost-datepicker name="event_date" mode="single" />
 ```
 
 ### Chart
 
 ```blade
-<x-boost-chart
+<x-openBoost-chart
     type="bar"
     :data="[
         'labels' => ['Jan', 'Feb', 'Mar'],
@@ -236,9 +298,9 @@ This publishes assets to:
 ### Text Editor
 
 ```blade
-<x-boost-editor name="content" engine="quill">
+<x-openBoost-editor name="content" engine="quill">
     {!! old('content') !!}
-</x-boost-editor>
+</x-openBoost-editor>
 ```
 
 ---
