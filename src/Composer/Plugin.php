@@ -93,6 +93,74 @@ class Plugin implements PluginInterface
             @mkdir($assetsDir, 0755, true);
         }
 
+        // Check for CDN configuration in composer extra (consuming project or this package)
+        $cdnConfig = null;
+        try {
+            $rootPackage = $this->composer->getPackage();
+            $rootExtra = $rootPackage ? $rootPackage->getExtra() : [];
+            if (isset($rootExtra['open-boost']['resource_cdn']) && is_array($rootExtra['open-boost']['resource_cdn'])) {
+                $cdnConfig = $rootExtra['open-boost']['resource_cdn'];
+            }
+        } catch (\Throwable $e) {
+            // ignore
+        }
+
+        // Also check this package's composer.json as fallback
+        if ($cdnConfig === null) {
+            $pkgComposerFile = $pkgRoot . DIRECTORY_SEPARATOR . 'composer.json';
+            if (is_file($pkgComposerFile)) {
+                $json = @json_decode(@file_get_contents($pkgComposerFile), true);
+                if (isset($json['extra']['open-boost']['resource_cdn']) && is_array($json['extra']['open-boost']['resource_cdn'])) {
+                    $cdnConfig = $json['extra']['open-boost']['resource_cdn'];
+                }
+            }
+        }
+
+        if (is_array($cdnConfig) && count($cdnConfig) > 0) {
+            $this->io->write('<info>OpenBoost:</info> downloading CDN assets into package resources...');
+            foreach ($cdnConfig as $libName => $urls) {
+                $libDir = $assetsDir . DIRECTORY_SEPARATOR . $libName;
+                if (!is_dir($libDir)) {
+                    @mkdir($libDir, 0755, true);
+                }
+                if (!is_array($urls)) {
+                    $urls = [$urls];
+                }
+                foreach ($urls as $url) {
+                    $url = trim($url);
+                    if ($url === '') {
+                        continue;
+                    }
+                    $path = parse_url($url, PHP_URL_PATH);
+                    $fileName = $path ? basename($path) : md5($url);
+                    $destFilePath = $libDir . DIRECTORY_SEPARATOR . $fileName;
+
+                    // Try to download via file_get_contents
+                    $ctx = stream_context_create(['http' => ['timeout' => 15], 'ssl' => ['verify_peer' => false, 'verify_peer_name' => false]]);
+                    $data = @file_get_contents($url, false, $ctx);
+                    if ($data !== false) {
+                        @file_put_contents($destFilePath, $data);
+                        $this->io->write("  <comment>✓</comment> Downloaded $libName/$fileName from CDN");
+                    } else {
+                        $this->io->writeError("  <error>✗</error> Failed to download $url for $libName");
+                        // fallback: placeholder
+                        $ext = pathinfo($fileName, PATHINFO_EXTENSION);
+                        if ($ext === 'js') {
+                            $content = "/* " . ucfirst($libName) . " - " . $fileName . " */\n// CDN download failed; placeholder created\n";
+                        } elseif ($ext === 'css') {
+                            $content = "/* " . ucfirst($libName) . " - " . $fileName . " */\n/* CDN download failed; placeholder created */\n";
+                        } else {
+                            $content = "";
+                        }
+                        @file_put_contents($destFilePath, $content);
+                    }
+                }
+            }
+
+            $this->io->write('<info>OpenBoost:</info> CDN resources configured at ' . $assetsDir);
+            return;
+        }
+
         // Map npm-asset packages to library names and which files to copy
         $libraries = [
             'jquery' => [
