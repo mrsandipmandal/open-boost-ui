@@ -5,13 +5,17 @@
     'size' => $size ?? 'md', // supported: sm, md, lg, xl, full
     'showFooter' => $showFooter ?? true,
     'showCloseButton' => $showCloseButton ?? true,
+    // Bootstrap-specific options
+    'modalClass' => $modalClass ?? '', // additional classes on .modal (e.g. "modal-blur")
+    'dialogClass' => $dialogClass ?? '', // extra classes on .modal-dialog
+    'centered' => $centered ?? false,   // add .modal-dialog-centered when true
 ])
 
 @if($theme === 'bootstrap')
 <div class="inline-block">
 
-    <div class="modal fade" id="{{ $id }}" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog @if($size === 'sm') modal-sm @elseif($size === 'lg') modal-lg @elseif($size === 'xl') modal-xl @elseif($size === 'full') modal-fullscreen @endif">
+    <div class="modal {{ $modalClass }} fade" id="{{ $id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog @if($size === 'sm') modal-sm @elseif($size === 'lg') modal-lg @elseif($size === 'xl') modal-xl @elseif($size === 'full') modal-fullscreen @endif @if($centered) modal-dialog-centered @endif {{ $dialogClass }}">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ $title }}</h5>
