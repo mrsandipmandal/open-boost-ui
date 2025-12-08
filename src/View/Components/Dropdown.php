@@ -17,6 +17,6 @@ class Dropdown extends Component
 
     public function render()
     {
-        return view('flash::components.flash.dropdown');
+        return view('openBoost::components.openBoost.dropdown');
     }
 }

@@ -19,15 +19,15 @@ class Chart extends Component
         $options = [],
         $data = []
     ) {
-        $this->id = $id ?? 'flash-chart-' . uniqid();
+        $this->id = $id ?? 'openBoost-chart-' . uniqid();
         $this->type = $type;
-        $this->engine = $engine ?? config('flashjs.default_chart', 'chartjs');
+        $this->engine = $engine ?? config('openBoostjs.default_chart', 'chartjs');
         $this->options = $options;
         $this->data = $data;
     }
 
     public function render()
     {
-        return view('flash::components.flash.chart');
+        return view('openBoost::components.openBoost.chart');
     }
 }

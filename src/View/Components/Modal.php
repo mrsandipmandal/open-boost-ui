@@ -11,12 +11,12 @@ class Modal extends Component
 
     public function __construct(string $id = null, string $title = 'Modal Title')
     {
-        $this->id = $id ?? 'flash-modal-' . uniqid();
+        $this->id = $id ?? 'openBoost-modal-' . uniqid();
         $this->title = $title;
     }
 
     public function render()
     {
-        return view('flash::components.flash.modal');
+        return view('openBoost::components.openBoost.modal');
     }
 }

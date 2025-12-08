@@ -214,7 +214,7 @@ This publishes assets to:
     Modal content goes here.
 </x-boost-modal>
 
-<button data-flash-modal-open="exampleModal">Open Modal</button>
+<button data-openBoost-modal-open="exampleModal">Open Modal</button>
 ```
 
 ### Select

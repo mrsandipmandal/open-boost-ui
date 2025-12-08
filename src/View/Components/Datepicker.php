@@ -17,7 +17,7 @@ class Datepicker extends Component
         bool $enableTime = false,
         string $lib = 'flatpickr'
     ) {
-        $this->id = $id ?? 'flash-datepicker-' . uniqid();
+        $this->id = $id ?? 'openBoost-datepicker-' . uniqid();
         $this->mode = $mode;
         $this->enableTime = $enableTime;
         $this->lib = $lib;
@@ -25,6 +25,6 @@ class Datepicker extends Component
 
     public function render()
     {
-        return view('flash::components.flash.datepicker');
+        return view('openBoost::components.openBoost.datepicker');
     }
 }

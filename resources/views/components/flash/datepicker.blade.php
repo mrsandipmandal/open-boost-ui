@@ -1,5 +1,5 @@
 @props([
-    'id' => $id ?? 'flash-datepicker-'.uniqid(),
+    'id' => $id ?? 'openBoost-datepicker-'.uniqid(),
     'mode' => $mode ?? 'single',
     'enableTime' => $enableTime ?? false,
     'lib' => $lib ?? 'flatpickr',
@@ -9,10 +9,10 @@
     type="text"
     id="{{ $id }}"
     {{ $attributes->merge([
-        'class' => 'flash-datepicker form-input',
-        'data-flash-datepicker' => true,
-        'data-flash-datepicker-lib' => $lib,
-        'data-flash-datepicker-mode' => $mode,
-        'data-flash-datepicker-time' => $enableTime ? '1' : '0',
+        'class' => 'openBoost-datepicker form-input',
+        'data-openBoost-datepicker' => true,
+        'data-openBoost-datepicker-lib' => $lib,
+        'data-openBoost-datepicker-mode' => $mode,
+        'data-openBoost-datepicker-time' => $enableTime ? '1' : '0',
     ]) }}
 />

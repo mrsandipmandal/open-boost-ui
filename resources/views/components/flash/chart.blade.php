@@ -1,18 +1,18 @@
 @props([
-    'id' => $id ?? 'flash-chart-'.uniqid(),
+    'id' => $id ?? 'openBoost-chart-'.uniqid(),
     'type' => $type ?? 'line',
-    'engine' => $engine ?? config('flashjs.default_chart', 'chartjs'),
+    'engine' => $engine ?? config('openBoostjs.default_chart', 'chartjs'),
     'options' => $options ?? [],
     'data' => $data ?? [],
 ])
 
 <div
-    data-flash-chart
-    data-flash-chart-id="{{ $id }}"
-    data-flash-chart-type="{{ $type }}"
-    data-flash-chart-engine="{{ $engine }}"
-    data-flash-chart-data='@json($data)'
-    data-flash-chart-options='@json($options)'
+    data-openBoost-chart
+    data-openBoost-chart-id="{{ $id }}"
+    data-openBoost-chart-type="{{ $type }}"
+    data-openBoost-chart-engine="{{ $engine }}"
+    data-openBoost-chart-data='@json($data)'
+    data-openBoost-chart-options='@json($options)'
 >
     @if($engine === 'chartjs')
         <canvas id="{{ $id }}"></canvas>

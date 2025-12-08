@@ -15,13 +15,13 @@ class Editor extends Component
         string $name = 'content',
         string $engine = null
     ) {
-        $this->id = $id ?? 'flash-editor-' . uniqid();
+        $this->id = $id ?? 'openBoost-editor-' . uniqid();
         $this->name = $name;
-        $this->engine = $engine ?? config('flashjs.editor', 'quill');
+        $this->engine = $engine ?? config('openBoostjs.editor', 'quill');
     }
 
     public function render()
     {
-        return view('flash::components.flash.editor');
+        return view('openBoost::components.openBoost.editor');
     }
 }

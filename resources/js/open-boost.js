@@ -13,9 +13,9 @@ import 'trix';
 
 const OpenBoost = {
     initDropdowns() {
-        document.querySelectorAll('[data-flash-dropdown]').forEach(dropdown => {
-            const toggle = dropdown.querySelector('[data-flash-dropdown-toggle]');
-            const menu = dropdown.querySelector('[data-flash-dropdown-menu]');
+        document.querySelectorAll('[data-openBoost-dropdown]').forEach(dropdown => {
+            const toggle = dropdown.querySelector('[data-openBoost-dropdown-toggle]');
+            const menu = dropdown.querySelector('[data-openBoost-dropdown-menu]');
             if (!toggle || !menu) return;
 
             toggle.addEventListener('click', e => {
@@ -30,15 +30,15 @@ const OpenBoost = {
     },
 
     initModals() {
-        document.querySelectorAll('[data-flash-modal]').forEach(modal => {
+        document.querySelectorAll('[data-openBoost-modal]').forEach(modal => {
             const id = modal.id;
 
-            document.querySelectorAll(`[data-flash-modal-open="${id}"]`)
+            document.querySelectorAll(`[data-openBoost-modal-open="${id}"]`)
                 .forEach(btn => btn.addEventListener('click', () => {
                     modal.classList.remove('hidden');
                 }));
 
-            modal.querySelectorAll('[data-flash-modal-close]')
+            modal.querySelectorAll('[data-openBoost-modal-close]')
                 .forEach(btn => btn.addEventListener('click', () => {
                     modal.classList.add('hidden');
                 }));
@@ -52,11 +52,11 @@ const OpenBoost = {
     },
 
     initSelects() {
-        document.querySelectorAll('[data-flash-select]').forEach(select => {
-            const lib = select.dataset.flashSelectLib || 'select2';
-            const search = select.dataset.flashSelectSearch === '1';
-            // optional: data-flash-select-theme="bootstrap-5" to use Select2 bootstrap theme
-            const selectTheme = select.dataset.flashSelectTheme || select.dataset.theme || '';
+        document.querySelectorAll('[data-openBoost-select]').forEach(select => {
+            const lib = select.dataset.openBoostSelectLib || 'select2';
+            const search = select.dataset.openBoostSelectSearch === '1';
+            // optional: data-openBoost-select-theme="bootstrap-5" to use Select2 bootstrap theme
+            const selectTheme = select.dataset.openBoostSelectTheme || select.dataset.theme || '';
 
             if (lib === 'select2') {
                 const options = {
@@ -75,10 +75,10 @@ const OpenBoost = {
     },
 
     initDatepickers() {
-        document.querySelectorAll('[data-flash-datepicker]').forEach(input => {
-            const lib = input.dataset.flashDatepickerLib || 'flatpickr';
-            const mode = input.dataset.flashDatepickerMode || 'single';
-            const enableTime = input.dataset.flashDatepickerTime === '1';
+        document.querySelectorAll('[data-openBoost-datepicker]').forEach(input => {
+            const lib = input.dataset.openBoostDatepickerLib || 'flatpickr';
+            const mode = input.dataset.openBoostDatepickerMode || 'single';
+            const enableTime = input.dataset.openBoostDatepickerTime === '1';
 
             if (lib === 'flatpickr') {
                 flatpickr(input, {
@@ -90,18 +90,18 @@ const OpenBoost = {
     },
 
     initCharts() {
-        document.querySelectorAll('[data-flash-chart]').forEach(el => {
-            const engine = el.dataset.flashChartEngine || 'chartjs';
-            const type = el.dataset.flashChartType || 'line';
+        document.querySelectorAll('[data-openBoost-chart]').forEach(el => {
+            const engine = el.dataset.openBoostChartEngine || 'chartjs';
+            const type = el.dataset.openBoostChartType || 'line';
                 // Enhanced modals: support transitions, escape-to-close, focus-trap, return focus
-                document.querySelectorAll('[data-flash-modal]').forEach(modal => {
+                document.querySelectorAll('[data-openBoost-modal]').forEach(modal => {
                     const id = modal.id;
 
                     // Options via data- attributes
-                    const allowEscape = modal.dataset.flashModalEsc !== '0'; // default true
-                    const trapFocus = modal.dataset.flashModalTrap !== '0'; // default true
-                    const returnFocus = modal.dataset.flashModalReturn !== '0'; // default true
-                    const useFade = modal.dataset.flashModalFade !== '0'; // default true
+                    const allowEscape = modal.dataset.openBoostModalEsc !== '0'; // default true
+                    const trapFocus = modal.dataset.openBoostModalTrap !== '0'; // default true
+                    const returnFocus = modal.dataset.openBoostModalReturn !== '0'; // default true
+                    const useFade = modal.dataset.openBoostModalFade !== '0'; // default true
 
                     let lastActive = null;
 
@@ -198,13 +198,13 @@ const OpenBoost = {
                     }
 
                     // open triggers
-                    document.querySelectorAll(`[data-flash-modal-open="${id}"]`)
+                    document.querySelectorAll(`[data-openBoost-modal-open="${id}"]`)
                         .forEach(btn => btn.addEventListener('click', (ev) => {
                             openModal(btn);
                         }));
 
                     // close buttons inside modal
-                    modal.querySelectorAll('[data-flash-modal-close]')
+                    modal.querySelectorAll('[data-openBoost-modal-close]')
                         .forEach(btn => btn.addEventListener('click', () => {
                             closeModal();
                         }));
@@ -220,11 +220,11 @@ const OpenBoost = {
             },
 
             initEditors() {
-                document.querySelectorAll('[data-flash-editor]').forEach(wrapper => {
-                    const engine = wrapper.dataset.flashEditorEngine || 'quill';
-                    const id = wrapper.dataset.flashEditorId;
+                document.querySelectorAll('[data-openBoost-editor]').forEach(wrapper => {
+                    const engine = wrapper.dataset.openBoostEditorEngine || 'quill';
+                    const id = wrapper.dataset.openBoostEditorId;
                     const textarea = wrapper.querySelector('textarea');
-                    const target = wrapper.querySelector('[data-flash-editor-target]');
+                    const target = wrapper.querySelector('[data-openBoost-editor-target]');
 
                     if (!textarea || !target) return;
 

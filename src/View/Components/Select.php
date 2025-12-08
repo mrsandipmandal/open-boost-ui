@@ -13,7 +13,7 @@ class Select extends Component
 
     public function __construct(string $id = null, bool $multiple = false, bool $search = true, string $lib = 'select2')
     {
-        $this->id = $id ?? 'flash-select-' . uniqid();
+        $this->id = $id ?? 'openBoost-select-' . uniqid();
         $this->multiple = $multiple;
         $this->search = $search;
         $this->lib = $lib;
@@ -21,6 +21,6 @@ class Select extends Component
 
     public function render()
     {
-        return view('flash::components.flash.select');
+        return view('openBoost::components.openBoost.select');
     }
 }
