@@ -5,106 +5,105 @@
 Located at:
 # Open Boost UI (open-boost/open-boost-ui)
 
-Laravel Blade components and frontend integrations (Select2, Choices, Flatpickr, Chart.js, ApexCharts, Quill, SimpleMDE, Trix, DataTables, etc.) with an optional Composer plugin that assists installing and publishing frontend resources.
+Laravel Blade components and integrated frontend libraries (Select2, Choices, Flatpickr, Chart.js, ApexCharts, Quill, SimpleMDE, Trix, DataTables) with bundled assets — **no external npm/Composer dependencies needed**.
 
 ---
 
 ## Quick overview
 
-- Install package with Composer.
-- During installation the package can optionally copy bundled assets and attempt to install frontend packages used by the library.
-- You control resource installation in three ways:
-  - Environment variable: `OPENBOOST_RESOURCES=1` (one-off/session)
-  - `composer.json` extra config in the consuming project: `extra.open-boost.install_resources = true` (persistent)
-  - Interactive prompt: when none of the above are set and Composer is interactive, the plugin will ask Y/N during install.
+During `composer require open-boost/open-boost-ui`, you will be prompted:
+```
+OpenBoost: do you want to download resources? [Y/N]
+```
 
-Note: Composer does not accept unknown CLI flags, so `composer require open-boost/open-boost-ui --resources` will fail. Use one of the control methods above instead.
+- **Answer Y** → Frontend assets are downloaded and configured into the package at `resources/assets/` (happens once during setup)
+- **Answer N** → Skip resource configuration (can be done later with `php artisan openboost:install-resources`)
 
 ---
 
-## Installation (recommended)
+## Installation
 
-1) (Optional) Enable Asset Packagist in the consuming project so `npm-asset/*` packages can be resolved. Run this in PowerShell from your project folder:
-
-```powershell
-composer config repositories.asset-packagist composer https://asset-packagist.org
-```
-
-2) Install the package. You will be prompted if interactive and no explicit setting exists:
+### Step 1: Require the package
 
 ```powershell
 composer require open-boost/open-boost-ui
 ```
 
-When prompted:
+### Step 2: Answer the prompt
 
-- Answer `y` to copy the package's bundled resources into your project and to run the configured `composer require` for frontend packages (requires Asset Packagist or another asset repository).
-- Answer `n` to skip resource installation — the package will still be installed (no frontend assets will be added).
+When prompted, decide if you want to download and configure frontend resources **into the package**:
 
-3) Alternatively, enable automatic install by environment variable (one-off):
+```
+OpenBoost: do you want to download resources? [Y/N]
+```
+
+**Y** → Downloads frontend libraries (jQuery, Select2, Flatpickr, Charts, Editors, etc.) and configures them at:
+```
+open-boost-ui/
+└── resources/
+    └── assets/
+        ├── jquery/
+        ├── select2/
+        ├── choices.js/
+        ├── flatpickr/
+        ├── chart.js/
+        ├── apexcharts/
+        ├── quill/
+        ├── simplemde/
+        ├── trix/
+        └── datatables.net/
+```
+
+**N** → Skips resource download. You can configure later with:
+```powershell
+php artisan openboost:install-resources
+```
+
+---
+
+## Bundled Assets Structure
+
+After resources are configured, the package includes all frontend library files organized by library:
+
+```
+resources/assets/jquery/
+├── jquery.min.js
+└── jquery.js
+
+resources/assets/select2/
+├── select2.min.js
+├── select2.min.css
+├── select2.js
+└── select2.css
+
+... (and so on for all libraries)
+```
+
+Each library directory contains the necessary JS and CSS files for that component.
+
+---
+
+## Manual Resource Configuration
+
+If you skipped resource download during install, configure them later:
 
 ```powershell
-# set env var for PowerShell session
-$env:OPENBOOST_RESOURCES = '1'
-composer require open-boost/open-boost-ui
+php artisan openboost:install-resources
 ```
 
-4) Or persist the choice by adding to your consuming project's `composer.json` before requiring:
-
-```json
-"extra": {
-  "open-boost": {
-    "install_resources": true
-  }
-}
-```
-
-Then run:
-
-```powershell
-composer require open-boost/open-boost-ui
-```
-
-5) Composer plugin security prompt: when Composer sees a package with type `composer-plugin` it may ask to allow the plugin (writes to `allow-plugins` in `composer.json`). Approve it for the plugin to run.
+Answer the prompt to download and configure assets into `resources/assets/`.
 
 ---
 
 ## Local development / testing (use local package copy)
 
-If you're developing the package locally and want your consuming project to use the workspace copy (so the plugin and `extra.class` you edited are used), add a path repository in the consuming project's folder:
+If you're developing the package locally and want your consuming project to use the workspace copy:
 
 ```powershell
 # from the consuming project folder
 composer config repositories.open-boost path ../open-boost-ui
 composer require open-boost/open-boost-ui:dev-master --prefer-source
 ```
-
-This instructs Composer to use the local path instead of fetching from Packagist/GitHub.
-
----
-
-## What the plugin does when resources are installed
-
-- Copies the package `resources/` directory into `resources/open-boost` in your consuming project (this can be changed if you prefer `public/vendor/open-boost`).
-- Reads `extra.open-boost.resource_packages` from the package `composer.json` and runs `composer require` for those package names (e.g. `npm-asset/select2`). This requires an asset repository such as Asset Packagist.
-
-If you prefer not to have the plugin run external Composer commands, you can skip the prompt and/or not set the env/extra flag — the package will still be installed but the frontend assets won't be copied or fetched. If you'd like, open an issue or PR suggesting that the plugin copy to `public/vendor/open-boost` instead of `resources/open-boost` and I can change the default.
-
----
-
-## Manual frontend install (recommended for modern apps)
-
-Many Laravel apps manage frontend assets via npm/yarn and a bundler (Vite, Mix, etc.). If you prefer to manage frontend dependencies yourself, skip the plugin resource install and add the required packages with npm or yarn in your application:
-
-```powershell
-# npm
-npm install jquery select2 choices.js flatpickr chart.js apexcharts quill simplemde trix datatables.net
-
-# or yarn
-yarn add jquery select2 choices.js flatpickr chart.js apexcharts quill simplemde trix datatables.net
-```
-
-Then import/build them with your normal frontend pipeline.
 
 ---
 
@@ -113,18 +112,18 @@ Then import/build them with your normal frontend pipeline.
 ### Dropdown
 
 ```blade
-<x-flash-dropdown label="Menu">
+<x-boost-dropdown label="Menu">
     <a href="#">Profile</a>
     <a href="#">Logout</a>
-</x-flash-dropdown>
+</x-boost-dropdown>
 ```
 
 ### Modal
 
 ```blade
-<x-flash-modal id="exampleModal" title="Demo Modal">
+<x-boost-modal id="exampleModal" title="Demo Modal">
     Modal content goes here.
-</x-flash-modal>
+</x-boost-modal>
 
 <button data-flash-modal-open="exampleModal">Open Modal</button>
 ```
@@ -132,22 +131,22 @@ Then import/build them with your normal frontend pipeline.
 ### Select
 
 ```blade
-<x-flash-select name="tags[]" multiple lib="choices">
+<x-boost-select name="tags[]" multiple lib="choices">
     <option value="php">PHP</option>
     <option value="laravel">Laravel</option>
-</x-flash-select>
+</x-boost-select>
 ```
 
 ### Datepicker
 
 ```blade
-<x-flash-datepicker name="event_date" mode="single" />
+<x-boost-datepicker name="event_date" mode="single" />
 ```
 
 ### Chart
 
 ```blade
-<x-flash-chart
+<x-boost-chart
     type="bar"
     :data="[
         'labels' => ['Jan', 'Feb', 'Mar'],
@@ -159,9 +158,9 @@ Then import/build them with your normal frontend pipeline.
 ### Text Editor
 
 ```blade
-<x-flash-editor name="content" engine="quill">
+<x-boost-editor name="content" engine="quill">
     {!! old('content') !!}
-</x-flash-editor>
+</x-boost-editor>
 ```
 
 ---

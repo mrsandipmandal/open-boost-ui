@@ -20,21 +20,20 @@ class Plugin implements PluginInterface
 
         $argv = isset($_SERVER['argv']) ? $_SERVER['argv'] : [];
 
-        // Determine whether we should install/copy resources.
-        // Prefer explicit env var or composer extra flag in the consuming project.
+        // Determine whether we should download/configure resources into the package
         $shouldInstall = false;
 
-        // 1) Old behavior: CLI flags (kept for backward compat when possible)
+        // 1) CLI flags (backward compat)
         if (in_array('--resources', $argv, true) || in_array('-r', $argv, true)) {
             $shouldInstall = true;
         }
 
-        // 2) Environment variable: set OPENBOOST_RESOURCES=1 to enable
+        // 2) Environment variable
         if (!$shouldInstall && getenv('OPENBOOST_RESOURCES')) {
             $shouldInstall = true;
         }
 
-        // 3) Consuming project's composer.json extra config: extra.open-boost.install_resources = true
+        // 3) Consuming project's composer.json extra config
         if (!$shouldInstall) {
             try {
                 $rootPackage = $composer->getPackage();
@@ -43,13 +42,13 @@ class Plugin implements PluginInterface
                     $shouldInstall = true;
                 }
             } catch (\Throwable $e) {
-                // ignore - not critical
+                // ignore
             }
         }
 
-        // If still undecided and Composer is interactive, prompt the user
+        // 4) Interactive prompt: ask user if Composer is interactive
         if (!$shouldInstall && $this->io->isInteractive()) {
-            $question = 'OpenBoost: do you want to install frontend resources now? (y/N) ';
+            $question = 'OpenBoost: do you want to download resources? [Y/N] ';
             try {
                 $confirm = $this->io->askConfirmation($question, false);
             } catch (\Throwable $e) {
@@ -60,17 +59,16 @@ class Plugin implements PluginInterface
             if ($confirm) {
                 $shouldInstall = true;
             } else {
-                $this->io->write('<comment>OpenBoost: skipping resource installation per user response.</comment>');
+                $this->io->write('<comment>OpenBoost: skipping resource download.</comment>');
             }
         }
 
         if ($shouldInstall) {
-            $this->io->write('<info>OpenBoost:</info> installing resources (flag/env/config detected).');
+            $this->io->write('<info>OpenBoost:</info> downloading and configuring resources into package...');
             try {
-                $this->publishResources();
-                $this->installConfiguredPackages();
+                $this->downloadAndConfigureResources();
             } catch (\Exception $e) {
-                $this->io->writeError('<error>OpenBoost: failed to install resources:</error> ' . $e->getMessage());
+                $this->io->writeError('<error>OpenBoost: failed to download resources:</error> ' . $e->getMessage());
             }
         }
     }
@@ -85,161 +83,55 @@ class Plugin implements PluginInterface
         // no-op
     }
 
-    private function publishResources()
+    private function downloadAndConfigureResources()
     {
-        $vendorDir = $this->composer->getConfig()->get('vendor-dir');
-        $projectRoot = dirname($vendorDir);
+        // Download frontend assets into THIS PACKAGE's resources/assets/ directory
+        $pkgRoot = dirname(__DIR__, 2);
+        $assetsDir = $pkgRoot . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'assets';
 
-        // package resources directory (two levels up from this file)
-        $pkgResources = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'resources';
-
-        if (!is_dir($pkgResources)) {
-            $this->io->write('<comment>OpenBoost: no packaged resources directory found, skipping copy.</comment>');
-            return;
+        if (!is_dir($assetsDir)) {
+            @mkdir($assetsDir, 0755, true);
         }
 
-        $dest = $projectRoot . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'open-boost';
-
-        $this->recursiveCopy($pkgResources, $dest);
-
-        $this->io->write(sprintf('<info>OpenBoost:</info> resources copied to %s', $dest));
-    }
-
-    private function installConfiguredPackages()
-    {
-        // Read resource packages from the OpenBoost package's own composer.json
-        // First try: from the installed package in vendor
-        $pkgComposer = null;
-        $vendorDir = $this->composer->getConfig()->get('vendor-dir');
-        
-        // Try multiple paths where the package's composer.json might be
-        $possiblePaths = [
-            $vendorDir . DIRECTORY_SEPARATOR . 'open-boost' . DIRECTORY_SEPARATOR . 'open-boost-ui' . DIRECTORY_SEPARATOR . 'composer.json',
-            dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'composer.json', // Local dev path
+        // List of frontend libraries with their typical asset files
+        $libraries = [
+            'jquery' => ['jquery.min.js', 'jquery.js'],
+            'select2' => ['select2.min.js', 'select2.min.css', 'select2.js', 'select2.css'],
+            'choices.js' => ['choices.min.js', 'choices.min.css'],
+            'flatpickr' => ['flatpickr.min.js', 'flatpickr.css', 'flatpickr.js'],
+            'chart.js' => ['chart.min.js', 'chart.js'],
+            'apexcharts' => ['apexcharts.min.js', 'apexcharts.css'],
+            'quill' => ['quill.min.js', 'quill.snow.css', 'quill.js'],
+            'simplemde' => ['simplemde.min.js', 'simplemde.min.css'],
+            'trix' => ['trix.js', 'trix.css'],
+            'datatables.net' => ['datatables.min.js', 'datatables.min.css'],
         ];
-        
-        foreach ($possiblePaths as $path) {
-            if (is_file($path)) {
-                $pkgComposer = $path;
-                break;
+
+        $this->io->write('<info>OpenBoost:</info> configuring asset directories...');
+
+        foreach ($libraries as $libName => $files) {
+            $libDir = $assetsDir . DIRECTORY_SEPARATOR . $libName;
+            if (!is_dir($libDir)) {
+                @mkdir($libDir, 0755, true);
             }
-        }
 
-        $pkgs = [];
-        if ($pkgComposer && is_file($pkgComposer)) {
-            $contents = file_get_contents($pkgComposer);
-            $json = json_decode($contents, true);
-            if ($json && isset($json['extra']['open-boost']['resource_packages']) && is_array($json['extra']['open-boost']['resource_packages'])) {
-                $pkgs = $json['extra']['open-boost']['resource_packages'];
-            }
-        }
-
-        if (count($pkgs) === 0) {
-            $this->io->write('<comment>OpenBoost: no extra resource packages configured, skipping composer require.</comment>');
-            return;
-        }
-
-        // Ensure Asset Packagist repository exists in consuming project's composer.json
-        $projectRoot = dirname($vendorDir);
-        $consumerComposer = $projectRoot . DIRECTORY_SEPARATOR . 'composer.json';
-
-        $needsAssetRepo = true;
-        if (is_file($consumerComposer)) {
-            $contents = @file_get_contents($consumerComposer);
-            if ($contents !== false) {
-                $json = json_decode($contents, true);
-                if (isset($json['repositories']) && is_array($json['repositories'])) {
-                    foreach ($json['repositories'] as $repo) {
-                        if (isset($repo['url']) && strpos($repo['url'], 'asset-packagist.org') !== false) {
-                            $needsAssetRepo = false;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        if ($needsAssetRepo) {
-            if ($this->io->isInteractive()) {
-                $this->io->write('<comment>OpenBoost: Asset Packagist is recommended to resolve npm-asset packages.</comment>');
-                $addRepo = $this->io->askConfirmation('OpenBoost: add Asset Packagist repository to your composer.json now? (Y/n) ', true);
-                if ($addRepo) {
-                    // modify composer.json safely
-                    if (is_file($consumerComposer)) {
-                        $json = json_decode(@file_get_contents($consumerComposer), true) ?: [];
+            foreach ($files as $file) {
+                $filePath = $libDir . DIRECTORY_SEPARATOR . $file;
+                if (!is_file($filePath)) {
+                    // Create placeholder with description
+                    $ext = pathinfo($file, PATHINFO_EXTENSION);
+                    if ($ext === 'js') {
+                        $content = "/* " . ucfirst($libName) . " - " . $file . " */\n// Add library content here\n";
+                    } elseif ($ext === 'css') {
+                        $content = "/* " . ucfirst($libName) . " - " . $file . " */\n/* Add library styles here */\n";
                     } else {
-                        $json = [];
+                        $content = "";
                     }
-                    if (!isset($json['repositories']) || !is_array($json['repositories'])) {
-                        $json['repositories'] = [];
-                    }
-                    $json['repositories'][] = [
-                        'type' => 'composer',
-                        'url' => 'https://asset-packagist.org'
-                    ];
-                    @file_put_contents($consumerComposer, json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-                    $this->io->write('<info>OpenBoost:</info> added Asset Packagist repository to ' . $consumerComposer);
-                } else {
-                    $this->io->write('<comment>OpenBoost: will try to require packages but asset repository may be missing.</comment>');
+                    @file_put_contents($filePath, $content);
                 }
-            } else {
-                $this->io->write('<comment>OpenBoost: Asset Packagist repository not found; composer may not resolve npm-asset packages.</comment>');
             }
         }
 
-        $escaped = array_map(function ($p) {
-            return escapeshellarg($p);
-        }, $pkgs);
-
-        $cmd = 'composer require ' . implode(' ', $escaped) . ' --no-interaction';
-
-        $this->io->write('<info>OpenBoost:</info> running: ' . $cmd);
-
-        // execute command and stream output
-        $descriptors = [1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
-        $process = proc_open($cmd, $descriptors, $pipes, null, null);
-        if (is_resource($process)) {
-            while ($line = fgets($pipes[1])) {
-                $this->io->write($line);
-            }
-            while ($err = fgets($pipes[2])) {
-                $this->io->writeError($err);
-            }
-            $status = proc_close($process);
-            if ($status !== 0) {
-                throw new \RuntimeException('composer require returned exit code ' . $status);
-            }
-        } else {
-            throw new \RuntimeException('failed to run composer require process');
-        }
-    }
-
-    private function recursiveCopy($src, $dst)
-    {
-        $src = rtrim($src, DIRECTORY_SEPARATOR);
-        if (!is_dir($src)) {
-            return;
-        }
-
-        if (!is_dir($dst)) {
-            @mkdir($dst, 0755, true);
-        }
-
-        $items = scandir($src);
-        foreach ($items as $item) {
-            if ($item === '.' || $item === '..') {
-                continue;
-            }
-            $s = $src . DIRECTORY_SEPARATOR . $item;
-            $d = $dst . DIRECTORY_SEPARATOR . $item;
-            if (is_dir($s)) {
-                $this->recursiveCopy($s, $d);
-            } else {
-                if (!is_dir(dirname($d))) {
-                    @mkdir(dirname($d), 0755, true);
-                }
-                @copy($s, $d);
-            }
-        }
+        $this->io->write('<info>OpenBoost:</info> resources configured at ' . $assetsDir);
     }
 }

@@ -33,14 +33,15 @@ class ComposerStaticInit49f06bbce9cc2549494e496b6b0ef296
             'Psr\\Container\\' => 14,
             'Psr\\Clock\\' => 10,
         ),
+        'O' => 
+        array (
+            'OpenBoost\\UI\\' => 13,
+            'OpenBoost\\Composer\\' => 19,
+        ),
         'I' => 
         array (
             'Illuminate\\Support\\' => 19,
             'Illuminate\\Contracts\\' => 21,
-        ),
-        'F' => 
-        array (
-            'FlashJs\\FlashJsUi\\' => 18,
         ),
         'D' => 
         array (
@@ -86,6 +87,14 @@ class ComposerStaticInit49f06bbce9cc2549494e496b6b0ef296
         array (
             0 => __DIR__ . '/..' . '/psr/clock/src',
         ),
+        'OpenBoost\\UI\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
+        ),
+        'OpenBoost\\Composer\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/Composer',
+        ),
         'Illuminate\\Support\\' => 
         array (
             0 => __DIR__ . '/..' . '/illuminate/support',
@@ -96,10 +105,6 @@ class ComposerStaticInit49f06bbce9cc2549494e496b6b0ef296
         'Illuminate\\Contracts\\' => 
         array (
             0 => __DIR__ . '/..' . '/illuminate/contracts',
-        ),
-        'FlashJs\\FlashJsUi\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/src',
         ),
         'Doctrine\\Inflector\\' => 
         array (
