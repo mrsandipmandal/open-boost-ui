@@ -1,7 +1,7 @@
 {
-  "name": "flashjs/flashjs-laravel-ui",
-  "version": "1.0.10",
-  "description": "Laravel Blade components + JS integration for Dropdown, Modals, Select2, Flatpickr, Charts, Editors etc. via a single flashjs library.",
+  "name": "open-boost/open-boost-ui",
+  "version": "1.0.0",
+  "description": "Laravel Blade components + JS integration for Dropdown, Modals, Select2, Flatpickr, Charts, Editors etc. A powerful Bootstrap-ready UI component library.",
   "type": "library",
   "license": "MIT",
   "authors": [
@@ -11,23 +11,31 @@
       "homepage": "https://github.com/mrsandipmandal"
     }
   ],
-  "homepage": "https://github.com/mrsandipmandal/flashjs-laravel-ui",
-  "keywords": ["laravel", "blade", "components", "dropdown", "modal", "select2", "flatpickr", "chart", "editor"],
+  "homepage": "https://github.com/mrsandipmandal/open-boost-ui",
+  "keywords": ["laravel", "blade", "components", "bootstrap", "ui", "dropdown", "modal", "select2", "flatpickr", "chart", "editor"],
   "autoload": {
     "psr-4": {
-      "FlashJs\\FlashJsUi\\": "src/"
+      "OpenBoost\\UI\\": "src/"
     }
   },
   "extra": {
     "laravel": {
       "providers": [
-        "FlashJs\\FlashJsUi\\FlashJsServiceProvider"
+        "OpenBoost\\UI\\OpenBoostServiceProvider"
       ]
     }
   },
   "require": {
     "php": ">=8.0",
     "illuminate/support": "^9.0"
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "@php artisan vendor:publish --provider=OpenBoost\\UI\\OpenBoostServiceProvider --tag=open-boost-ui --force"
+    ],
+    "post-update-cmd": [
+      "@php artisan vendor:publish --provider=OpenBoost\\UI\\OpenBoostServiceProvider --tag=open-boost-ui --force"
+    ]
   },
   "minimum-stability": "stable",
   "prefer-stable": true

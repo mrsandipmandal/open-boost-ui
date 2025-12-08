@@ -55,11 +55,17 @@ const FlashJS = {
         document.querySelectorAll('[data-flash-select]').forEach(select => {
             const lib = select.dataset.flashSelectLib || 'select2';
             const search = select.dataset.flashSelectSearch === '1';
+            // optional: data-flash-select-theme="bootstrap-5" to use Select2 bootstrap theme
+            const selectTheme = select.dataset.flashSelectTheme || select.dataset.theme || '';
 
             if (lib === 'select2') {
-                $(select).select2({
+                const options = {
                     minimumResultsForSearch: search ? 0 : Infinity
-                });
+                };
+                if (selectTheme) {
+                    options.theme = selectTheme;
+                }
+                $(select).select2(options);
             } else if (lib === 'choices') {
                 new Choices(select, {
                     searchEnabled: search

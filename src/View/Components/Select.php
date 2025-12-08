@@ -1,6 +1,6 @@
 <?php
 
-namespace FlashJs\FlashJsUi\View\Components;
+namespace OpenBoost\UI\View\Components;
 
 use Illuminate\View\Component;
 

@@ -43,77 +43,22 @@ MIT License © Sandip Mandal
 - [Security](https://github.com/mrsandipmandal/flashjs-laravel-ui/security)
 - [Insights](https://github.com/mrsandipmandal/flashjs-laravel-ui/pulse)
 
-FlashJS Laravel UI is a reusable Laravel package that provides Blade components with automatic JavaScript initialization. It supports Dropdowns, Modals, Select inputs, Datepickers, Charts, and Rich Text Editors using a single JavaScript file (`flashjs.js`). This package is designed for Laravel 10 and 11 applications.
-
----
-
-## Features
-
-- Ready-to-use Blade components
-- Single JavaScript initializer for all UI widgets
-- Integration with popular frontend libraries:
-  - Select2, Choices.js (Select Inputs)
-  - Flatpickr (Datepicker)
-  - Chart.js, ApexCharts (Charts)
-  - Quill, Trix, SimpleMDE (Text Editors)
-- Publishable Blade Views and Config
-- Works smoothly with Vite
-
----
-
 ## Installation
 
-### Install via Composer
+### Basic Installation
 
 ```bash
-composer require flashjs/flashjs-laravel-ui
+composer require open-boost/open-boost-ui
 ```
 
-If developing locally from cloned repository:
-
-```jsonc
-// composer.json of your Laravel project
-"repositories": [
-  {
-    "type": "path",
-    "url": "../flashjs-laravel-ui"
-  }
-]
-```
+### Installation with All Libraries
 
 ```bash
-composer require flashjs/flashjs-laravel-ui:"*"
+composer require open-boost/open-boost-ui
+php artisan vendor:publish --provider=OpenBoost\\UI\\OpenBoostServiceProvider --tag=open-boost-ui
 ```
 
-### Publish Assets
-
-```bash
-php artisan vendor:publish --tag=flashjs-config
-php artisan vendor:publish --tag=flashjs-js
-php artisan vendor:publish --tag=flashjs-views
-```
-
-### JavaScript Setup (Vite)
-
-Install frontend libraries:
-
-```bash
-npm install jquery select2 choices.js flatpickr chart.js apexcharts quill simplemde trix
-```
-
-Add FlashJS in `resources/js/app.js`:
-
-```js
-import './vendor/flashjs';
-```
-
-Build:
-
-```bash
-npm run dev
-```
-
-FlashJS automatically initializes components on load.
+This publishes assets to `resources/js/vendor/open-boost/`, config to `config/open-boost.php`, and views to `resources/views/vendor/boost/`.
 
 ## Usage Examples
 
@@ -173,13 +118,7 @@ FlashJS automatically initializes components on load.
 
 ## Configuration
 
-Located at:
-
-```arduino
-config/flashjs.php
-```
-
-Example:
+Located at `config/open-boost.php`
 
 ```php
 return [

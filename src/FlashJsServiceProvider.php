@@ -1,34 +1,34 @@
 <?php
 
-namespace FlashJs\FlashJsUi;
+namespace OpenBoost\UI;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
-class FlashJsServiceProvider extends ServiceProvider
+class OpenBoostServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/flashjs.php', 'flashjs');
+        $this->mergeConfigFrom(__DIR__ . '/../config/open-boost.php', 'open-boost');
     }
 
     public function boot()
     {
         // Views
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'flash');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'boost');
 
         // Publish config + assets
         $this->publishes([
-            __DIR__ . '/../config/flashjs.php' => config_path('flashjs.php'),
-        ], 'flashjs-config');
+            __DIR__ . '/../config/open-boost.php' => config_path('open-boost.php'),
+        ], 'open-boost-ui');
 
         $this->publishes([
-            __DIR__ . '/../resources/js/flashjs.js' => resource_path('js/vendor/flashjs.js'),
-        ], 'flashjs-js');
+            __DIR__ . '/../resources/js' => resource_path('js/vendor/open-boost'),
+        ], 'open-boost-ui');
 
         $this->publishes([
-            __DIR__ . '/../resources/views' => resource_path('views/vendor/flash'),
-        ], 'flashjs-views');
+            __DIR__ . '/../resources/views' => resource_path('views/vendor/boost'),
+        ], 'open-boost-ui');
 
         // Register Blade components
         Blade::component('flash::components.flash.dropdown', 'flash-dropdown');

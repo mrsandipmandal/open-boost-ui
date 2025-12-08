@@ -15,6 +15,7 @@
         'data-flash-select' => true,
         'data-flash-select-lib' => $lib,
         'data-flash-select-search' => $search ? '1' : '0',
+        'data-flash-select-theme' => $theme === 'bootstrap' ? 'bootstrap-5' : '',
     ]) }}
 >
     {{ $slot }}
