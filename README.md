@@ -55,11 +55,11 @@ In `resources/views/layouts/app.blade.php` (or your main layout):
 **That's it!** Now use components:
 
 ```blade
-<x-flash-select name="tags" lib="select2" theme="bootstrap">
+<x-openBoost-select name="tags" lib="select2" theme="bootstrap">
     <option value="">Select tags...</option>
     <option value="php">PHP</option>
     <option value="laravel">Laravel</option>
-</x-flash-select>
+</x-openBoost-select>
 ```
 
 ---

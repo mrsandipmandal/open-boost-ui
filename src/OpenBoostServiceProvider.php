@@ -40,20 +40,20 @@ class OpenBoostServiceProvider extends ServiceProvider
             __DIR__ . '/../resources/views' => resource_path('views/vendor/boost'),
         ], 'open-boost-ui');
 
-        // Register Blade components (using the correct namespace for views/components/flash/)
-        Blade::component('boost::components.flash.dropdown', 'flash-dropdown');
-        Blade::component('boost::components.flash.modal', 'flash-modal');
-        Blade::component('boost::components.flash.select', 'flash-select');
-        Blade::component('boost::components.flash.datepicker', 'flash-datepicker');
-        Blade::component('boost::components.flash.chart', 'flash-chart');
-        Blade::component('boost::components.flash.editor', 'flash-editor');
+        // Register Blade components (using the correct namespace for views/components/openBoost/)
+        Blade::component('boost::components.openBoost.dropdown', 'openBoost-dropdown');
+        Blade::component('boost::components.openBoost.modal', 'openBoost-modal');
+        Blade::component('boost::components.openBoost.select', 'openBoost-select');
+        Blade::component('boost::components.openBoost.datepicker', 'openBoost-datepicker');
+        Blade::component('boost::components.openBoost.chart', 'openBoost-chart');
+        Blade::component('boost::components.openBoost.editor', 'openBoost-editor');
 
         // Keep backward compatibility aliases
-        Blade::component('boost::components.flash.dropdown', 'boost-dropdown');
-        Blade::component('boost::components.flash.modal', 'boost-modal');
-        Blade::component('boost::components.flash.select', 'boost-select');
-        Blade::component('boost::components.flash.datepicker', 'boost-datepicker');
-        Blade::component('boost::components.flash.chart', 'boost-chart');
-        Blade::component('boost::components.flash.editor', 'boost-editor');
+        Blade::component('boost::components.openBoost.dropdown', 'boost-dropdown');
+        Blade::component('boost::components.openBoost.modal', 'boost-modal');
+        Blade::component('boost::components.openBoost.select', 'boost-select');
+        Blade::component('boost::components.openBoost.datepicker', 'boost-datepicker');
+        Blade::component('boost::components.openBoost.chart', 'boost-chart');
+        Blade::component('boost::components.openBoost.editor', 'boost-editor');
     }
 }
