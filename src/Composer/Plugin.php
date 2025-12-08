@@ -20,8 +20,35 @@ class Plugin implements PluginInterface
 
         $argv = isset($_SERVER['argv']) ? $_SERVER['argv'] : [];
 
+        // Determine whether we should install/copy resources.
+        // Prefer explicit env var or composer extra flag in the consuming project.
+        $shouldInstall = false;
+
+        // 1) Old behavior: CLI flags (kept for backward compat when possible)
         if (in_array('--resources', $argv, true) || in_array('-r', $argv, true)) {
-            $this->io->write('<info>OpenBoost:</info> --resources flag detected — installing resources.');
+            $shouldInstall = true;
+        }
+
+        // 2) Environment variable: set OPENBOOST_RESOURCES=1 to enable
+        if (!$shouldInstall && getenv('OPENBOOST_RESOURCES')) {
+            $shouldInstall = true;
+        }
+
+        // 3) Consuming project's composer.json extra config: extra.open-boost.install_resources = true
+        if (!$shouldInstall) {
+            try {
+                $rootPackage = $composer->getPackage();
+                $extra = $rootPackage ? $rootPackage->getExtra() : [];
+                if (isset($extra['open-boost']['install_resources']) && $extra['open-boost']['install_resources']) {
+                    $shouldInstall = true;
+                }
+            } catch (\Throwable $e) {
+                // ignore - not critical
+            }
+        }
+
+        if ($shouldInstall) {
+            $this->io->write('<info>OpenBoost:</info> installing resources (flag/env/config detected).');
             try {
                 $this->publishResources();
                 $this->installConfiguredPackages();
