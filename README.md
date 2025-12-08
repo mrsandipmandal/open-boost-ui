@@ -107,7 +107,96 @@ composer require open-boost/open-boost-ui:dev-master --prefer-source
 
 ---
 
-## Example usage (Blade components)
+## Setup: Include Assets and Initialize Components
+
+After installing the package, you must include the frontend assets and initialize the components in your Blade layout.
+
+### Step 1: Add CSS in `<head>`
+
+In your main Blade layout (e.g., `resources/views/layouts/app.blade.php`), add these in the `<head>`:
+
+```blade
+<!-- Select2 CSS -->
+<link href="{{ asset('vendor/open-boost/assets/select2/select2.min.css') }}" rel="stylesheet">
+
+<!-- Flatpickr CSS -->
+<link href="{{ asset('vendor/open-boost/assets/flatpickr/flatpickr.css') }}" rel="stylesheet">
+
+<!-- Quill CSS -->
+<link href="{{ asset('vendor/open-boost/assets/quill/quill.snow.css') }}" rel="stylesheet">
+
+<!-- SimpleMDE CSS -->
+<link href="{{ asset('vendor/open-boost/assets/simplemde/simplemde.min.css') }}" rel="stylesheet">
+
+<!-- Trix CSS -->
+<link href="{{ asset('vendor/open-boost/assets/trix/trix.css') }}" rel="stylesheet">
+
+<!-- ApexCharts CSS -->
+<link href="{{ asset('vendor/open-boost/assets/apexcharts/apexcharts.css') }}" rel="stylesheet">
+
+<!-- DataTables CSS -->
+<link href="{{ asset('vendor/open-boost/assets/datatables.net/datatables.min.css') }}" rel="stylesheet">
+
+<!-- Choices.js CSS -->
+<link href="{{ asset('vendor/open-boost/assets/choices.js/choices.min.css') }}" rel="stylesheet">
+```
+
+### Step 2: Add JavaScript before `</body>`
+
+At the end of your Blade layout (before `</body>`), add:
+
+```blade
+<!-- jQuery -->
+<script src="{{ asset('vendor/open-boost/assets/jquery/jquery.min.js') }}"></script>
+
+<!-- Select2 JS -->
+<script src="{{ asset('vendor/open-boost/assets/select2/select2.min.js') }}"></script>
+
+<!-- Flatpickr JS -->
+<script src="{{ asset('vendor/open-boost/assets/flatpickr/flatpickr.min.js') }}"></script>
+
+<!-- Quill JS -->
+<script src="{{ asset('vendor/open-boost/assets/quill/quill.min.js') }}"></script>
+
+<!-- SimpleMDE JS -->
+<script src="{{ asset('vendor/open-boost/assets/simplemde/simplemde.min.js') }}"></script>
+
+<!-- ApexCharts JS -->
+<script src="{{ asset('vendor/open-boost/assets/apexcharts/apexcharts.min.js') }}"></script>
+
+<!-- Chart.js JS -->
+<script src="{{ asset('vendor/open-boost/assets/chart.js/chart.min.js') }}"></script>
+
+<!-- DataTables JS -->
+<script src="{{ asset('vendor/open-boost/assets/datatables.net/datatables.min.js') }}"></script>
+
+<!-- Choices.js JS -->
+<script src="{{ asset('vendor/open-boost/assets/choices.js/choices.min.js') }}"></script>
+
+<!-- Trix JS -->
+<script src="{{ asset('vendor/open-boost/assets/trix/trix.js') }}"></script>
+
+<!-- OpenBoost Initialization -->
+<script src="{{ asset('vendor/open-boost/js/open-boost-init.js') }}"></script>
+```
+
+**That's it!** The `open-boost-init.js` script will automatically initialize all components when the DOM is ready.
+```
+
+### Step 3: Publish Assets (Optional)
+
+If you want to copy the bundled assets to your project's `public/vendor/` for serving directly:
+
+```powershell
+php artisan vendor:publish --provider=OpenBoost\\UI\\OpenBoostServiceProvider --tag=open-boost-ui
+```
+
+This publishes assets to:
+- Views → `resources/views/vendor/boost/`
+- Config → `config/open-boost.php`
+- Assets → `public/vendor/open-boost/`
+
+---
 
 ### Dropdown
 
