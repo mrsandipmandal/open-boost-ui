@@ -5,6 +5,11 @@
     'lib' => $lib ?? 'flatpickr',
 ])
 
+@php
+    // Auto-require the library when component is used
+    \OpenBoost\UI\Services\AssetManager::require($lib);
+@endphp
+
 <input
     type="text"
     id="{{ $id }}"

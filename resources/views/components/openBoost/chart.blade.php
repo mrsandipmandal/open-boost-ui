@@ -6,6 +6,11 @@
     'data' => $data ?? [],
 ])
 
+@php
+    // Auto-require the chart engine when component is used
+    \OpenBoost\UI\Services\AssetManager::require($engine === 'apexcharts' ? 'apexcharts' : 'chartjs');
+@endphp
+
 <div
     data-openBoost-chart
     data-openBoost-chart-id="{{ $id }}"

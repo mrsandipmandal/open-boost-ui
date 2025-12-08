@@ -4,6 +4,11 @@
     'engine' => $engine ?? config('openBoostjs.editor', 'quill'),
 ])
 
+@php
+    // Auto-require the editor engine when component is used
+    \OpenBoost\UI\Services\AssetManager::require($engine);
+@endphp
+
 <div
     data-openBoost-editor
     data-openBoost-editor-id="{{ $id }}"

@@ -4,6 +4,23 @@ Laravel Blade components and integrated frontend libraries (Select2, Choices, Fl
 
 ---
 
+## ⚠️ IMPORTANT: If Select2/Libraries Not Working
+
+**If you installed before December 8, 2025**, the old plugin created empty placeholder files.
+
+**Fix it immediately:**
+```bash
+# In your consuming project:
+php artisan openboost:install-resources
+# Answer: Y
+
+php artisan vendor:publish --provider=OpenBoost\\UI\\OpenBoostServiceProvider --tag=open-boost-ui --force
+```
+
+See [FIX_SELECT2.md](FIX_SELECT2.md) for complete details.
+
+---
+
 ## ⚡ Quick Start (3 Steps)
 
 ### 1. Install Package
@@ -12,52 +29,26 @@ composer require open-boost/open-boost-ui
 ```
 When prompted: **Answer `Y`** to download and configure frontend library assets.
 
-The plugin will:
-1. Download npm-asset packages (jQuery, Select2, Flatpickr, etc.)
-2. Copy actual library files to `vendor/open-boost/open-boost-ui/resources/assets/`
-3. These assets will be published to your project's `public/vendor/open-boost/` when you publish
-
 ### 2. Publish Assets to Public
 ```powershell
 php artisan vendor:publish --provider=OpenBoost\\UI\\OpenBoostServiceProvider --tag=open-boost-ui --force
 ```
-This copies all assets from the package to `public/vendor/open-boost/` so they're accessible in the browser.
 
-### 3. Include in Your Blade Layout
+### 3. Add Two Directives to Your Layout
 
-In `resources/views/layouts/app.blade.php` (or your main layout):
+In `resources/views/layouts/app.blade.php`:
 
 **In `<head>`:**
 ```blade
-<!-- CSS includes -->
-<link href="{{ asset('vendor/open-boost/assets/select2/select2.min.css') }}" rel="stylesheet">
-<link href="{{ asset('vendor/open-boost/assets/flatpickr/flatpickr.css') }}" rel="stylesheet">
-<link href="{{ asset('vendor/open-boost/assets/quill/quill.snow.css') }}" rel="stylesheet">
-<link href="{{ asset('vendor/open-boost/assets/simplemde/simplemde.min.css') }}" rel="stylesheet">
-<link href="{{ asset('vendor/open-boost/assets/trix/trix.css') }}" rel="stylesheet">
-<link href="{{ asset('vendor/open-boost/assets/apexcharts/apexcharts.css') }}" rel="stylesheet">
-<link href="{{ asset('vendor/open-boost/assets/datatables.net/jquery.dataTables.min.css') }}" rel="stylesheet">
-<link href="{{ asset('vendor/open-boost/assets/choices.js/choices.min.css') }}" rel="stylesheet">
+@openBoostAssets
 ```
 
 **Before `</body>`:**
 ```blade
-<!-- JavaScript includes (ORDER MATTERS: jQuery first, then libraries, then init) -->
-<script src="{{ asset('vendor/open-boost/assets/jquery/jquery.min.js') }}"></script>
-<script src="{{ asset('vendor/open-boost/assets/select2/select2.min.js') }}"></script>
-<script src="{{ asset('vendor/open-boost/assets/flatpickr/flatpickr.min.js') }}"></script>
-<script src="{{ asset('vendor/open-boost/assets/quill/quill.min.js') }}"></script>
-<script src="{{ asset('vendor/open-boost/assets/simplemde/simplemde.min.js') }}"></script>
-<script src="{{ asset('vendor/open-boost/assets/apexcharts/apexcharts.min.js') }}"></script>
-<script src="{{ asset('vendor/open-boost/assets/chart.js/chart.min.js') }}"></script>
-<script src="{{ asset('vendor/open-boost/assets/datatables.net/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('vendor/open-boost/assets/choices.js/choices.min.js') }}"></script>
-<script src="{{ asset('vendor/open-boost/assets/trix/trix.js') }}"></script>
-<!-- OpenBoost Init (auto-initializes all components) -->
-<script src="{{ asset('vendor/open-boost/js/open-boost-init.js') }}"></script>
+@openBoostScripts
 ```
 
-**That's it!** Now use components:
+### ✅ Done! Now Use Components:
 
 ```blade
 <x-openBoost-select name="tags" lib="select2" theme="bootstrap">
@@ -66,6 +57,8 @@ In `resources/views/layouts/app.blade.php` (or your main layout):
     <option value="laravel">Laravel</option>
 </x-openBoost-select>
 ```
+
+**That's it!** Assets load automatically when components are used. No manual script tags needed! 🎉
 
 ---
 

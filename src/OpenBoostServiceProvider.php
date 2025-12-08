@@ -55,5 +55,16 @@ class OpenBoostServiceProvider extends ServiceProvider
         Blade::component('boost::components.openBoost.datepicker', 'boost-datepicker');
         Blade::component('boost::components.openBoost.chart', 'boost-chart');
         Blade::component('boost::components.openBoost.editor', 'boost-editor');
+
+        // Register Blade directives for asset injection
+        Blade::directive('openBoostAssets', function () {
+            return "<?php echo \\OpenBoost\\UI\\Services\\AssetManager::getCSSLinks(); ?>";
+        });
+
+        Blade::directive('openBoostScripts', function () {
+            $html = "<?php \$js = \\OpenBoost\\UI\\Services\\AssetManager::getJSScripts() . \\OpenBoost\\UI\\Services\\AssetManager::getInitScript(); ?>";
+            $html .= "<?php echo \$js; ?>";
+            return $html;
+        });
     }
 }

@@ -6,6 +6,11 @@
     'theme' => $theme ?? 'bootstrap', // 'bootstrap' (default) or 'tailwind'
 ])
 
+@php
+    // Auto-require the library when component is used
+    \OpenBoost\UI\Services\AssetManager::require($lib);
+@endphp
+
 <select
     id="{{ $id }}"
     name="{{ $attributes->get('name') }}"
