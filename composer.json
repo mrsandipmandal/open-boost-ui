@@ -55,5 +55,11 @@
     }
   },
   "minimum-stability": "stable",
-  "prefer-stable": true
+  "prefer-stable": true,
+  "repositories": {
+    "open-boost": {
+      "type": "path",
+      "url": "../open-boost-ui"
+    }
+  }
 }
