@@ -2,7 +2,7 @@
   "name": "open-boost/open-boost-ui",
   "version": "1.0.0",
   "description": "Laravel Blade components + JS integration for Dropdown, Modals, Select2, Flatpickr, Charts, Editors etc. A powerful Bootstrap-ready UI component library.",
-  "type": "library",
+  "type": "composer-plugin",
   "license": "MIT",
   "authors": [
     {
@@ -15,19 +15,14 @@
   "keywords": ["laravel", "blade", "components", "bootstrap", "ui", "dropdown", "modal", "select2", "flatpickr", "chart", "editor"],
   "autoload": {
     "psr-4": {
-      "OpenBoost\\UI\\": "src/"
-    }
-  },
-  "extra": {
-    "laravel": {
-      "providers": [
-        "OpenBoost\\UI\\OpenBoostServiceProvider"
-      ]
+      "OpenBoost\\UI\\": "src/",
+      "OpenBoost\\Composer\\": "src/Composer/"
     }
   },
   "require": {
     "php": ">=8.0",
-    "illuminate/support": "^9.0"
+    "illuminate/support": "^9.0",
+    "composer-plugin-api": "^2.0"
   },
   "scripts": {
     "post-install-cmd": [
@@ -36,6 +31,27 @@
     "post-update-cmd": [
       "@php artisan vendor:publish --provider=OpenBoost\\UI\\OpenBoostServiceProvider --tag=open-boost-ui --force"
     ]
+  },
+  "extra": {
+    "open-boost": {
+      "resource_packages": [
+        "npm-asset/jquery",
+        "npm-asset/select2",
+        "npm-asset/choices.js",
+        "npm-asset/flatpickr",
+        "npm-asset/chart.js",
+        "npm-asset/apexcharts",
+        "npm-asset/quill",
+        "npm-asset/simplemde",
+        "npm-asset/trix",
+        "npm-asset/datatables.net"
+      ]
+    },
+    "laravel": {
+      "providers": [
+        "OpenBoost\\UI\\OpenBoostServiceProvider"
+      ]
+    }
   },
   "minimum-stability": "stable",
   "prefer-stable": true
