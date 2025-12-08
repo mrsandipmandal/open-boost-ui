@@ -120,6 +120,55 @@ class Plugin implements PluginInterface
             return;
         }
 
+        // Ensure Asset Packagist repository exists in consuming project's composer.json
+        $vendorDir = $this->composer->getConfig()->get('vendor-dir');
+        $projectRoot = dirname($vendorDir);
+        $consumerComposer = $projectRoot . DIRECTORY_SEPARATOR . 'composer.json';
+
+        $needsAssetRepo = true;
+        if (is_file($consumerComposer)) {
+            $contents = @file_get_contents($consumerComposer);
+            if ($contents !== false) {
+                $json = json_decode($contents, true);
+                if (isset($json['repositories']) && is_array($json['repositories'])) {
+                    foreach ($json['repositories'] as $repo) {
+                        if (isset($repo['url']) && strpos($repo['url'], 'asset-packagist.org') !== false) {
+                            $needsAssetRepo = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        if ($needsAssetRepo) {
+            if ($this->io->isInteractive()) {
+                $this->io->write('<comment>OpenBoost: Asset Packagist is recommended to resolve npm-asset packages.</comment>');
+                $addRepo = $this->io->askConfirmation('OpenBoost: add Asset Packagist repository to your composer.json now? (Y/n) ', true);
+                if ($addRepo) {
+                    // modify composer.json safely
+                    if (is_file($consumerComposer)) {
+                        $json = json_decode(@file_get_contents($consumerComposer), true) ?: [];
+                    } else {
+                        $json = [];
+                    }
+                    if (!isset($json['repositories']) || !is_array($json['repositories'])) {
+                        $json['repositories'] = [];
+                    }
+                    $json['repositories'][] = [
+                        'type' => 'composer',
+                        'url' => 'https://asset-packagist.org'
+                    ];
+                    @file_put_contents($consumerComposer, json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+                    $this->io->write('<info>OpenBoost:</info> added Asset Packagist repository to ' . $consumerComposer);
+                } else {
+                    $this->io->write('<comment>OpenBoost: will try to require packages but asset repository may be missing.</comment>');
+                }
+            } else {
+                $this->io->write('<comment>OpenBoost: Asset Packagist repository not found; composer may not resolve npm-asset packages.</comment>');
+            }
+        }
+
         $escaped = array_map(function ($p) {
             return escapeshellarg($p);
         }, $pkgs);
