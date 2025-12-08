@@ -85,7 +85,7 @@ class Plugin implements PluginInterface
 
     private function downloadAndConfigureResources()
     {
-        // Download frontend assets into THIS PACKAGE's resources/assets/ directory
+        // Copy npm-asset libraries into THIS PACKAGE's resources/assets/ directory
         $pkgRoot = dirname(__DIR__, 2);
         $assetsDir = $pkgRoot . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'assets';
 
@@ -93,45 +93,119 @@ class Plugin implements PluginInterface
             @mkdir($assetsDir, 0755, true);
         }
 
-        // List of frontend libraries with their typical asset files
+        // Map npm-asset packages to library names and which files to copy
         $libraries = [
-            'jquery' => ['jquery.min.js', 'jquery.js'],
-            'select2' => ['select2.min.js', 'select2.min.css', 'select2.js', 'select2.css'],
-            'choices.js' => ['choices.min.js', 'choices.min.css'],
-            'flatpickr' => ['flatpickr.min.js', 'flatpickr.css', 'flatpickr.js'],
-            'chart.js' => ['chart.min.js', 'chart.js'],
-            'apexcharts' => ['apexcharts.min.js', 'apexcharts.css'],
-            'quill' => ['quill.min.js', 'quill.snow.css', 'quill.js'],
-            'simplemde' => ['simplemde.min.js', 'simplemde.min.css'],
-            'trix' => ['trix.js', 'trix.css'],
-            'datatables.net' => ['datatables.min.js', 'datatables.min.css'],
+            'jquery' => [
+                'source' => 'npm-asset/jquery/dist',
+                'files' => ['jquery.min.js', 'jquery.js']
+            ],
+            'select2' => [
+                'source' => 'npm-asset/select2/dist',
+                'files' => ['js/select2.min.js', 'js/select2.js', 'css/select2.min.css', 'css/select2.css']
+            ],
+            'choices.js' => [
+                'source' => 'npm-asset/choices.js',
+                'files' => ['public/assets/scripts/choices.min.js', 'public/assets/styles/choices.min.css']
+            ],
+            'flatpickr' => [
+                'source' => 'npm-asset/flatpickr/dist',
+                'files' => ['flatpickr.min.js', 'flatpickr.js', 'flatpickr.min.css', 'flatpickr.css']
+            ],
+            'chart.js' => [
+                'source' => 'npm-asset/chart.js/dist',
+                'files' => ['chart.min.js', 'chart.js']
+            ],
+            'apexcharts' => [
+                'source' => 'npm-asset/apexcharts/dist',
+                'files' => ['apexcharts.min.js', 'apexcharts.css']
+            ],
+            'quill' => [
+                'source' => 'npm-asset/quill/dist',
+                'files' => ['quill.min.js', 'quill.js', 'quill.snow.css', 'quill.core.css']
+            ],
+            'simplemde' => [
+                'source' => 'npm-asset/simplemde/dist',
+                'files' => ['simplemde.min.js', 'simplemde.min.css']
+            ],
+            'trix' => [
+                'source' => 'npm-asset/trix/dist',
+                'files' => ['trix.js', 'trix.css']
+            ],
+            'datatables.net' => [
+                'source' => 'npm-asset/datatables.net/js',
+                'files' => ['jquery.dataTables.min.js', 'jquery.dataTables.js']
+            ],
         ];
 
         $this->io->write('<info>OpenBoost:</info> configuring asset directories...');
 
-        foreach ($libraries as $libName => $files) {
+        // Determine vendor path - could be in package itself or in consuming project
+        $vendorPath = $this->findVendorPath();
+
+        foreach ($libraries as $libName => $config) {
             $libDir = $assetsDir . DIRECTORY_SEPARATOR . $libName;
             if (!is_dir($libDir)) {
                 @mkdir($libDir, 0755, true);
             }
 
-            foreach ($files as $file) {
-                $filePath = $libDir . DIRECTORY_SEPARATOR . $file;
-                if (!is_file($filePath)) {
-                    // Create placeholder with description
-                    $ext = pathinfo($file, PATHINFO_EXTENSION);
+            $sourcePath = $vendorPath . DIRECTORY_SEPARATOR . $config['source'];
+
+            foreach ($config['files'] as $sourceFile) {
+                $sourceFilePath = $sourcePath . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $sourceFile);
+                $destFileName = basename($sourceFile);
+                $destFilePath = $libDir . DIRECTORY_SEPARATOR . $destFileName;
+
+                // Copy from vendor if file exists, otherwise create placeholder
+                if (is_file($sourceFilePath)) {
+                    @copy($sourceFilePath, $destFilePath);
+                    $this->io->write("  <comment>✓</comment> Copied $libName/$destFileName");
+                } else {
+                    // Create placeholder if source not found
+                    $ext = pathinfo($sourceFile, PATHINFO_EXTENSION);
                     if ($ext === 'js') {
-                        $content = "/* " . ucfirst($libName) . " - " . $file . " */\n// Add library content here\n";
+                        $content = "/* " . ucfirst($libName) . " - " . $destFileName . " */\n// Library placeholder - actual file not found\n";
                     } elseif ($ext === 'css') {
-                        $content = "/* " . ucfirst($libName) . " - " . $file . " */\n/* Add library styles here */\n";
+                        $content = "/* " . ucfirst($libName) . " - " . $destFileName . " */\n/* Library placeholder - actual file not found */\n";
                     } else {
                         $content = "";
                     }
-                    @file_put_contents($filePath, $content);
+                    @file_put_contents($destFilePath, $content);
                 }
             }
         }
 
         $this->io->write('<info>OpenBoost:</info> resources configured at ' . $assetsDir);
+    }
+
+    private function findVendorPath()
+    {
+        // Try to find vendor directory
+        $pkgRoot = dirname(__DIR__, 2);
+
+        // First try: package's own vendor (if running in monorepo)
+        $localVendor = $pkgRoot . DIRECTORY_SEPARATOR . 'vendor';
+        if (is_dir($localVendor)) {
+            return $localVendor;
+        }
+
+        // Second try: consuming project's vendor (typical case)
+        $parentVendor = dirname($pkgRoot, 3) . DIRECTORY_SEPARATOR . 'vendor';
+        if (is_dir($parentVendor)) {
+            return $parentVendor;
+        }
+
+        // Fallback: try to use composer's vendor-dir config
+        try {
+            $config = $this->composer->getConfig();
+            $vendorDir = $config->get('vendor-dir');
+            if (is_dir($vendorDir)) {
+                return $vendorDir;
+            }
+        } catch (\Throwable $e) {
+            // ignore
+        }
+
+        // Last resort: assume typical vendor location relative to package root
+        return $pkgRoot . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'vendor';
     }
 }

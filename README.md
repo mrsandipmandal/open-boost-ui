@@ -10,13 +10,18 @@ Laravel Blade components and integrated frontend libraries (Select2, Choices, Fl
 ```powershell
 composer require open-boost/open-boost-ui
 ```
-When prompted: **Answer `Y`** to download resources (assets will be available in vendor)
+When prompted: **Answer `Y`** to download and configure frontend library assets.
+
+The plugin will:
+1. Download npm-asset packages (jQuery, Select2, Flatpickr, etc.)
+2. Copy actual library files to `vendor/open-boost/open-boost-ui/resources/assets/`
+3. These assets will be published to your project's `public/vendor/open-boost/` when you publish
 
 ### 2. Publish Assets to Public
 ```powershell
-php artisan vendor:publish --provider=OpenBoost\\UI\\OpenBoostServiceProvider --tag=open-boost-ui
+php artisan vendor:publish --provider=OpenBoost\\UI\\OpenBoostServiceProvider --tag=open-boost-ui --force
 ```
-This copies CSS, JS, and assets to `public/vendor/open-boost/`
+This copies all assets from the package to `public/vendor/open-boost/` so they're accessible in the browser.
 
 ### 3. Include in Your Blade Layout
 
@@ -31,7 +36,7 @@ In `resources/views/layouts/app.blade.php` (or your main layout):
 <link href="{{ asset('vendor/open-boost/assets/simplemde/simplemde.min.css') }}" rel="stylesheet">
 <link href="{{ asset('vendor/open-boost/assets/trix/trix.css') }}" rel="stylesheet">
 <link href="{{ asset('vendor/open-boost/assets/apexcharts/apexcharts.css') }}" rel="stylesheet">
-<link href="{{ asset('vendor/open-boost/assets/datatables.net/datatables.min.css') }}" rel="stylesheet">
+<link href="{{ asset('vendor/open-boost/assets/datatables.net/jquery.dataTables.min.css') }}" rel="stylesheet">
 <link href="{{ asset('vendor/open-boost/assets/choices.js/choices.min.css') }}" rel="stylesheet">
 ```
 
@@ -45,7 +50,7 @@ In `resources/views/layouts/app.blade.php` (or your main layout):
 <script src="{{ asset('vendor/open-boost/assets/simplemde/simplemde.min.js') }}"></script>
 <script src="{{ asset('vendor/open-boost/assets/apexcharts/apexcharts.min.js') }}"></script>
 <script src="{{ asset('vendor/open-boost/assets/chart.js/chart.min.js') }}"></script>
-<script src="{{ asset('vendor/open-boost/assets/datatables.net/datatables.min.js') }}"></script>
+<script src="{{ asset('vendor/open-boost/assets/datatables.net/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('vendor/open-boost/assets/choices.js/choices.min.js') }}"></script>
 <script src="{{ asset('vendor/open-boost/assets/trix/trix.js') }}"></script>
 <!-- OpenBoost Init (auto-initializes all components) -->
@@ -193,30 +198,42 @@ This publishes assets to:
 
 **Problem:** Component renders but dropdown doesn't activate.
 
-**Solution:** Ensure you've completed all 3 setup steps, especially:
+**Solution:** Ensure all 3 setup steps are completed:
 
-1. ✅ **Published assets:**
+1. ✅ **Answered Y during install** to download and configure resources
+   - When you ran `composer require open-boost/open-boost-ui`
+   - The plugin prompted: `OpenBoost: do you want to download resources? [Y/N]`
+   - If you said N, run: `php artisan openboost:install-resources`
+
+2. ✅ **Published assets to public folder:**
    ```bash
-   php artisan vendor:publish --provider=OpenBoost\\UI\\OpenBoostServiceProvider --tag=open-boost-ui
+   php artisan vendor:publish --provider=OpenBoost\\UI\\OpenBoostServiceProvider --tag=open-boost-ui --force
    ```
+   - Check that files exist: `public/vendor/open-boost/assets/select2/select2.min.js` ✅
 
-2. ✅ **Included jQuery BEFORE Select2/Choices:**
+3. ✅ **Included jQuery BEFORE Select2 in your layout:**
    ```blade
+   <!-- CORRECT ORDER -->
    <script src="{{ asset('vendor/open-boost/assets/jquery/jquery.min.js') }}"></script>
    <script src="{{ asset('vendor/open-boost/assets/select2/select2.min.js') }}"></script>
-   <!-- Then OpenBoost init -->
    <script src="{{ asset('vendor/open-boost/js/open-boost-init.js') }}"></script>
    ```
 
-3. ✅ **Check browser console** for errors:
+4. ✅ **Check browser console for errors:**
    - Open DevTools (F12)
-   - Look for red error messages about jQuery or Select2
-   - The init script will log `Select2 initialized on: [element-id]` on success
+   - Look for red error messages
+   - The init script logs: `🚀 OpenBoost: Initializing components...`
+   - And: `Select2 initialized on: element-id`
 
 **Common Issues:**
-- `jQuery is not loaded` → Include jQuery before Select2
-- `Select2 library is not loaded` → Include Select2 JS before init script
-- Missing CSS → Include Select2 CSS in `<head>`
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `jQuery is not loaded` | jQuery script missing or in wrong order | Include jQuery before Select2 |
+| `Select2 library is not loaded` | Select2 JS missing or jQuery missing | Check Step 3 above - include jQuery first |
+| `Cannot read property 'fn'` | jQuery not loaded before Select2 | Move jQuery script earlier in `</body>` |
+| Select renders but no styling | CSS file not included | Add Select2 CSS to `<head>` |
+| Components don't initialize | `open-boost-init.js` not included | Add init script before `</body>` |
 
 **Use the debug helper:**
 ```javascript
@@ -224,10 +241,36 @@ This publishes assets to:
 OpenBoost.debug()
 ```
 
-This will show:
+This shows:
 - ✅/❌ Which libraries are loaded
 - How many components were found on the page
 - Whether initialization is working
+
+---
+
+### Resources Not Downloaded
+
+**Problem:** During `composer require`, you answered N to the resources prompt.
+
+**Solution:** Configure resources manually:
+```powershell
+php artisan openboost:install-resources
+```
+
+Then answer Y when prompted.
+
+---
+
+### Assets Directory Empty After Install
+
+**Problem:** `vendor/open-boost/open-boost-ui/resources/assets/` folder is empty.
+
+**Solution:** Run the install command:
+```powershell
+php artisan openboost:install-resources
+```
+
+The plugin will download and copy actual library files from npm-asset packages.
 
 ---
 

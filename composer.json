@@ -24,6 +24,18 @@
     "illuminate/support": "^9.0",
     "composer-plugin-api": "^2.0"
   },
+  "require-dev": {
+    "npm-asset/jquery": "^3.6",
+    "npm-asset/select2": "^4.0",
+    "npm-asset/choices.js": "^11.0",
+    "npm-asset/flatpickr": "^4.6",
+    "npm-asset/chart.js": "^4.0",
+    "npm-asset/apexcharts": "^5.0",
+    "npm-asset/quill": "^2.0",
+    "npm-asset/simplemde": "^1.11",
+    "npm-asset/trix": "^2.0",
+    "npm-asset/datatables.net": "^2.0"
+  },
   "scripts": {
     "post-install-cmd": [
       "@php artisan vendor:publish --provider=OpenBoost\\UI\\OpenBoostServiceProvider --tag=open-boost-ui --force"
@@ -57,6 +69,10 @@
   "minimum-stability": "stable",
   "prefer-stable": true,
   "repositories": {
+    "npm-asset": {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    },
     "open-boost": {
       "type": "path",
       "url": "../open-boost-ui"
