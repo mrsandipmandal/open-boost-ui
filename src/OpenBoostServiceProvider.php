@@ -31,11 +31,11 @@ class OpenBoostServiceProvider extends ServiceProvider
         ], 'open-boost-ui');
 
         // Register Blade components
-        Blade::component('flash::components.flash.dropdown', 'flash-dropdown');
-        Blade::component('flash::components.flash.modal', 'flash-modal');
-        Blade::component('flash::components.flash.select', 'flash-select');
-        Blade::component('flash::components.flash.datepicker', 'flash-datepicker');
-        Blade::component('flash::components.flash.chart', 'flash-chart');
-        Blade::component('flash::components.flash.editor', 'flash-editor');
+        Blade::component('boost::components.dropdown', 'boost-dropdown');
+        Blade::component('boost::components.modal', 'boost-modal');
+        Blade::component('boost::components.select', 'boost-select');
+        Blade::component('boost::components.datepicker', 'boost-datepicker');
+        Blade::component('boost::components.chart', 'boost-chart');
+        Blade::component('boost::components.editor', 'boost-editor');
     }
 }
