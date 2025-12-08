@@ -107,20 +107,29 @@ class Plugin implements PluginInterface
 
     private function installConfiguredPackages()
     {
-        // Read resource packages from the OpenBoost package's own composer.json, not the consuming project's
+        // Read resource packages from the OpenBoost package's own composer.json
+        // First try: from the installed package in vendor
+        $pkgComposer = null;
         $vendorDir = $this->composer->getConfig()->get('vendor-dir');
-        $projectRoot = dirname($vendorDir);
-        $pkgComposer = $vendorDir . DIRECTORY_SEPARATOR . 'open-boost' . DIRECTORY_SEPARATOR . 'open-boost-ui' . DIRECTORY_SEPARATOR . 'composer.json';
-
-        // If vendor path doesn't exist yet (early activation), try local package root
-        if (!is_file($pkgComposer)) {
-            $pkgComposer = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'composer.json';
+        
+        // Try multiple paths where the package's composer.json might be
+        $possiblePaths = [
+            $vendorDir . DIRECTORY_SEPARATOR . 'open-boost' . DIRECTORY_SEPARATOR . 'open-boost-ui' . DIRECTORY_SEPARATOR . 'composer.json',
+            dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'composer.json', // Local dev path
+        ];
+        
+        foreach ($possiblePaths as $path) {
+            if (is_file($path)) {
+                $pkgComposer = $path;
+                break;
+            }
         }
 
         $pkgs = [];
-        if (is_file($pkgComposer)) {
-            $json = json_decode(file_get_contents($pkgComposer), true);
-            if (isset($json['extra']['open-boost']['resource_packages']) && is_array($json['extra']['open-boost']['resource_packages'])) {
+        if ($pkgComposer && is_file($pkgComposer)) {
+            $contents = file_get_contents($pkgComposer);
+            $json = json_decode($contents, true);
+            if ($json && isset($json['extra']['open-boost']['resource_packages']) && is_array($json['extra']['open-boost']['resource_packages'])) {
                 $pkgs = $json['extra']['open-boost']['resource_packages'];
             }
         }
@@ -131,6 +140,7 @@ class Plugin implements PluginInterface
         }
 
         // Ensure Asset Packagist repository exists in consuming project's composer.json
+        $projectRoot = dirname($vendorDir);
         $consumerComposer = $projectRoot . DIRECTORY_SEPARATOR . 'composer.json';
 
         $needsAssetRepo = true;
