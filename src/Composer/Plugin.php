@@ -47,6 +47,23 @@ class Plugin implements PluginInterface
             }
         }
 
+        // If still undecided and Composer is interactive, prompt the user
+        if (!$shouldInstall && $this->io->isInteractive()) {
+            $question = 'OpenBoost: do you want to install frontend resources now? (y/N) ';
+            try {
+                $confirm = $this->io->askConfirmation($question, false);
+            } catch (\Throwable $e) {
+                $answer = $this->io->ask($question, 'n');
+                $confirm = in_array(strtolower(trim($answer)), ['y', 'yes'], true);
+            }
+
+            if ($confirm) {
+                $shouldInstall = true;
+            } else {
+                $this->io->write('<comment>OpenBoost: skipping resource installation per user response.</comment>');
+            }
+        }
+
         if ($shouldInstall) {
             $this->io->write('<info>OpenBoost:</info> installing resources (flag/env/config detected).');
             try {
