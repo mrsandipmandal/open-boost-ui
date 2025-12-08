@@ -1,83 +1,72 @@
-# Open Boost UI
-
-## Configuration
-
-Located at:
 # Open Boost UI (open-boost/open-boost-ui)
 
 Laravel Blade components and integrated frontend libraries (Select2, Choices, Flatpickr, Chart.js, ApexCharts, Quill, SimpleMDE, Trix, DataTables) with bundled assets — **no external npm/Composer dependencies needed**.
 
 ---
 
-## Quick overview
+## ⚡ Quick Start (3 Steps)
 
-During `composer require open-boost/open-boost-ui`, you will be prompted:
-```
-OpenBoost: do you want to download resources? [Y/N]
-```
-
-- **Answer Y** → Frontend assets are downloaded and configured into the package at `resources/assets/` (happens once during setup)
-- **Answer N** → Skip resource configuration (can be done later with `php artisan openboost:install-resources`)
-
----
-
-## Installation
-
-### Step 1: Require the package
-
+### 1. Install Package
 ```powershell
 composer require open-boost/open-boost-ui
 ```
+When prompted: **Answer `Y`** to download resources (assets will be available in vendor)
 
-### Step 2: Answer the prompt
-
-When prompted, decide if you want to download and configure frontend resources **into the package**:
-
-```
-OpenBoost: do you want to download resources? [Y/N]
-```
-
-**Y** → Downloads frontend libraries (jQuery, Select2, Flatpickr, Charts, Editors, etc.) and configures them at:
-```
-open-boost-ui/
-└── resources/
-    └── assets/
-        ├── jquery/
-        ├── select2/
-        ├── choices.js/
-        ├── flatpickr/
-        ├── chart.js/
-        ├── apexcharts/
-        ├── quill/
-        ├── simplemde/
-        ├── trix/
-        └── datatables.net/
-```
-
-**N** → Skips resource download. You can configure later with:
+### 2. Publish Assets to Public
 ```powershell
-php artisan openboost:install-resources
+php artisan vendor:publish --provider=OpenBoost\\UI\\OpenBoostServiceProvider --tag=open-boost-ui
+```
+This copies CSS, JS, and assets to `public/vendor/open-boost/`
+
+### 3. Include in Your Blade Layout
+
+In `resources/views/layouts/app.blade.php` (or your main layout):
+
+**In `<head>`:**
+```blade
+<!-- CSS includes -->
+<link href="{{ asset('vendor/open-boost/assets/select2/select2.min.css') }}" rel="stylesheet">
+<link href="{{ asset('vendor/open-boost/assets/flatpickr/flatpickr.css') }}" rel="stylesheet">
+<link href="{{ asset('vendor/open-boost/assets/quill/quill.snow.css') }}" rel="stylesheet">
+<link href="{{ asset('vendor/open-boost/assets/simplemde/simplemde.min.css') }}" rel="stylesheet">
+<link href="{{ asset('vendor/open-boost/assets/trix/trix.css') }}" rel="stylesheet">
+<link href="{{ asset('vendor/open-boost/assets/apexcharts/apexcharts.css') }}" rel="stylesheet">
+<link href="{{ asset('vendor/open-boost/assets/datatables.net/datatables.min.css') }}" rel="stylesheet">
+<link href="{{ asset('vendor/open-boost/assets/choices.js/choices.min.css') }}" rel="stylesheet">
+```
+
+**Before `</body>`:**
+```blade
+<!-- JavaScript includes (ORDER MATTERS: jQuery first, then libraries, then init) -->
+<script src="{{ asset('vendor/open-boost/assets/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('vendor/open-boost/assets/select2/select2.min.js') }}"></script>
+<script src="{{ asset('vendor/open-boost/assets/flatpickr/flatpickr.min.js') }}"></script>
+<script src="{{ asset('vendor/open-boost/assets/quill/quill.min.js') }}"></script>
+<script src="{{ asset('vendor/open-boost/assets/simplemde/simplemde.min.js') }}"></script>
+<script src="{{ asset('vendor/open-boost/assets/apexcharts/apexcharts.min.js') }}"></script>
+<script src="{{ asset('vendor/open-boost/assets/chart.js/chart.min.js') }}"></script>
+<script src="{{ asset('vendor/open-boost/assets/datatables.net/datatables.min.js') }}"></script>
+<script src="{{ asset('vendor/open-boost/assets/choices.js/choices.min.js') }}"></script>
+<script src="{{ asset('vendor/open-boost/assets/trix/trix.js') }}"></script>
+<!-- OpenBoost Init (auto-initializes all components) -->
+<script src="{{ asset('vendor/open-boost/js/open-boost-init.js') }}"></script>
+```
+
+**That's it!** Now use components:
+
+```blade
+<x-flash-select name="tags" lib="select2" theme="bootstrap">
+    <option value="">Select tags...</option>
+    <option value="php">PHP</option>
+    <option value="laravel">Laravel</option>
+</x-flash-select>
 ```
 
 ---
 
-## Bundled Assets Structure
+## Configuration
 
-After resources are configured, the package includes all frontend library files organized by library:
-
-```
-resources/assets/jquery/
-├── jquery.min.js
-└── jquery.js
-
-resources/assets/select2/
-├── select2.min.js
-├── select2.min.css
-├── select2.js
-└── select2.css
-
-... (and so on for all libraries)
-```
+Located at:
 
 Each library directory contains the necessary JS and CSS files for that component.
 
