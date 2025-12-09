@@ -13,10 +13,18 @@ class Plugin implements PluginInterface
     /** @var IOInterface */
     private $io;
 
+    /** @var string */
+    private $pluginPackageRoot;
+
     public function activate(Composer $composer, IOInterface $io)
     {
         $this->composer = $composer;
         $this->io = $io;
+
+        // Determine this plugin's actual root path in vendor
+        // When running from vendor during composer install, __FILE__ points to vendor/.../src/Composer/Plugin.php
+        // We need the vendor/open-boost/open-boost-ui directory
+        $this->pluginPackageRoot = dirname(__FILE__, 3); // Go up from src/Composer/Plugin.php to package root
 
         $argv = isset($_SERVER['argv']) ? $_SERVER['argv'] : [];
 
@@ -85,9 +93,9 @@ class Plugin implements PluginInterface
 
     private function downloadAndConfigureResources()
     {
-        // Copy npm-asset libraries into THIS PACKAGE's resources/assets/ directory
-        $pkgRoot = dirname(__DIR__, 2);
-        $assetsDir = $pkgRoot . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'assets';
+        // Download CDN assets into THIS PACKAGE's resources/assets/ directory
+        // $this->pluginPackageRoot is the actual vendor/open-boost/open-boost-ui path
+        $assetsDir = $this->pluginPackageRoot . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'assets';
 
         if (!is_dir($assetsDir)) {
             @mkdir($assetsDir, 0755, true);
@@ -107,7 +115,7 @@ class Plugin implements PluginInterface
 
         // Also check this package's composer.json as fallback
         if ($cdnConfig === null) {
-            $pkgComposerFile = $pkgRoot . DIRECTORY_SEPARATOR . 'composer.json';
+            $pkgComposerFile = $this->pluginPackageRoot . DIRECTORY_SEPARATOR . 'composer.json';
             if (is_file($pkgComposerFile)) {
                 $json = @json_decode(@file_get_contents($pkgComposerFile), true);
                 if (isset($json['extra']['open-boost']['resource_cdn']) && is_array($json['extra']['open-boost']['resource_cdn'])) {
@@ -178,6 +186,10 @@ class Plugin implements PluginInterface
             $this->io->write('<info>OpenBoost:</info> CDN resources configured at ' . $assetsDir);
             return;
         }
+
+        // Fallback: if no CDN config, try to copy from vendor npm-asset packages (legacy behavior)
+        $this->io->write('<info>OpenBoost:</info> CDN config not found; skipping asset download.');
+        $this->io->write('<comment>Note:</comment> To enable CDN downloads, ensure composer.json has extra.open-boost.resource_cdn configured.');
 
         // Map npm-asset packages to library names and which files to copy
         $libraries = [
