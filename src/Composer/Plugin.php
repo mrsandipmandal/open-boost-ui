@@ -55,7 +55,11 @@ class Plugin implements PluginInterface
         }
 
         // 4) Interactive prompt: ask user if Composer is interactive
-        if (!$shouldInstall && $this->io->isInteractive()) {
+        // Use a lock file to prevent duplicate prompts in same composer run
+        $lockFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'openboost_install_' . getmypid() . '.lock';
+        $alreadyPrompted = is_file($lockFile);
+
+        if (!$shouldInstall && $this->io->isInteractive() && !$alreadyPrompted) {
             $question = 'OpenBoost: do you want to download resources? [Y/N] ';
             try {
                 $confirm = $this->io->askConfirmation($question, false);
@@ -69,6 +73,11 @@ class Plugin implements PluginInterface
             } else {
                 $this->io->write('<comment>OpenBoost: skipping resource download.</comment>');
             }
+
+            // Mark that we've already prompted
+            @touch($lockFile);
+        } elseif (!$shouldInstall && $alreadyPrompted) {
+            // Skip silently if already prompted in this run
         }
 
         if ($shouldInstall) {
