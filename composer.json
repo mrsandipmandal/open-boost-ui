@@ -1,6 +1,6 @@
 {
   "name": "open-boost/open-boost-ui",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Laravel Blade components + JS integration for Dropdown, Modals, Select2, Flatpickr, Charts, Editors etc. A powerful Bootstrap-ready UI component library.",
   "type": "composer-plugin",
   "license": "MIT",
@@ -83,7 +83,7 @@
           "https://cdn.jsdelivr.net/npm/trix@1.3.5/dist/trix.js",
           "https://cdn.jsdelivr.net/npm/trix@1.3.5/dist/trix.min.css",
           "https://cdn.jsdelivr.net/npm/trix/dist/trix.min.js",
-          "https://cdn.jsdelivr.net/npm/trix/dist/trix.min.css",
+          "https://cdn.jsdelivr.net/npm/trix/dist/trix.min.css"
         ],
         "datatables.net": [
           "https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js",
