@@ -220,3 +220,12 @@ if (document.readyState === 'loading') {
 if (typeof window !== 'undefined') {
     window.OpenBoost = OpenBoost;
 }
+
+OpenBoost.debug();
+console.log('open-boost-init tag?', !!document.querySelector('script[src*="open-boost-init.js"]'));
+console.log('select2 script tag?', !!document.querySelector('script[src*="select2.min.js"]'));
+console.log('select2 css tag?', !!document.querySelector('link[href*="select2.min.css"]'));
+console.log('flatpickr script tag?', !!document.querySelector('script[src*="flatpickr.min.js"]'));
+console.log('flatpickr css tag?', !!document.querySelector('link[href*="flatpickr.min.css"]'));
+console.log('select element', document.querySelector('[data-openboost-select]'));
+console.log('datepicker element', document.querySelector('[data-openboost-datepicker]'));

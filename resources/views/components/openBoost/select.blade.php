@@ -10,7 +10,8 @@
     // Auto-require the library when component is used
     \OpenBoost\UI\Services\AssetManager::isRequired($lib) || \OpenBoost\UI\Services\AssetManager::require($lib);
 @endphp
-
+{{ \OpenBoost\UI\Services\AssetManager::render() }}
+{{ \OpenBoost\UI\Services\AssetManager::require($lib) }}
 <select
     id="{{ $id }}"
     name="{{ $attributes->get('name') }}"
