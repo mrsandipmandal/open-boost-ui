@@ -221,11 +221,24 @@ if (typeof window !== 'undefined') {
     window.OpenBoost = OpenBoost;
 }
 
-OpenBoost.debug();
-console.log('open-boost-init tag?', !!document.querySelector('script[src*="open-boost-init.js"]'));
-console.log('select2 script tag?', !!document.querySelector('script[src*="select2.min.js"]'));
-console.log('select2 css tag?', !!document.querySelector('link[href*="select2.min.css"]'));
-console.log('flatpickr script tag?', !!document.querySelector('script[src*="flatpickr.min.js"]'));
-console.log('flatpickr css tag?', !!document.querySelector('link[href*="flatpickr.min.css"]'));
-console.log('select element', document.querySelector('[data-openboost-select]'));
-console.log('datepicker element', document.querySelector('[data-openboost-datepicker]'));
+// OpenBoost.debug();
+// console.log('open-boost-init tag?', !!document.querySelector('script[src*="open-boost-init.js"]'));
+// console.log('select2 script tag?', !!document.querySelector('script[src*="select2.min.js"]'));
+// console.log('select2 css tag?', !!document.querySelector('link[href*="select2.min.css"]'));
+// console.log('flatpickr script tag?', !!document.querySelector('script[src*="flatpickr.min.js"]'));
+// console.log('flatpickr css tag?', !!document.querySelector('link[href*="flatpickr.min.css"]'));
+// console.log('select element', document.querySelector('[data-openboost-select]'));
+// console.log('datepicker element', document.querySelector('[data-openboost-datepicker]'));
+
+// Fallback helper used by other scripts that expect select2Focus to exist
+if (typeof window.select2Focus === 'undefined') {
+    window.select2Focus = function (el) {
+        try {
+            if (window.jQuery && jQuery(el).data('select2')) {
+                jQuery(el).select2('open');
+            }
+        } catch (e) {
+            // noop
+        }
+    };
+}

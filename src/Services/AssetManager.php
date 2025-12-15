@@ -52,7 +52,7 @@ class AssetManager
         $assetMap = [
             'select2' => ['assets/select2/select2.min.css'],
             'choices' => ['assets/choices.js/choices.min.css'],
-            'flatpickr' => ['assets/flatpickr/flatpickr.css'],
+            'flatpickr' => ['assets/flatpickr/flatpickr.min.css', 'assets/flatpickr/flatpickr.css'],
             'quill' => ['assets/quill/quill.snow.css'],
             'simplemde' => ['assets/simplemde/simplemde.min.css'],
             'trix' => ['assets/trix/trix.css'],

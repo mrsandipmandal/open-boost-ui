@@ -10,7 +10,6 @@
 ])
 
 @php
-    // Auto-require the library when component is used
     AssetManager::isRequired($lib) || AssetManager::require($lib);
 @endphp
 

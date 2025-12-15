@@ -15,9 +15,9 @@
     id="{{ $id }}"
     {{ $attributes->merge([
         'class' => 'openBoost-datepicker form-input',
-        'data-openBoost-datepicker' => true,
-        'data-openBoost-datepicker-lib' => $lib,
-        'data-openBoost-datepicker-mode' => $mode,
-        'data-openBoost-datepicker-time' => $enableTime ? '1' : '0',
+        'data-openboost-datepicker' => true,
+        'data-openboost-datepicker-lib' => $lib,
+        'data-openboost-datepicker-mode' => $mode,
+        'data-openboost-datepicker-time' => $enableTime ? '1' : '0',
     ]) }}
 />
