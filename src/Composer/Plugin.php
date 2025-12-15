@@ -16,6 +16,9 @@ class Plugin implements PluginInterface
     /** @var string */
     private $pluginPackageRoot;
 
+    /** @var bool */
+    private $autoPublish = false;
+
     public function activate(Composer $composer, IOInterface $io)
     {
         $this->composer = $composer;
@@ -52,6 +55,24 @@ class Plugin implements PluginInterface
             } catch (\Throwable $e) {
                 // ignore
             }
+        }
+
+        // If this package (the plugin) defines a resource_cdn map, default to auto-install
+        // unless `extra.open-boost.auto_install_resources` is explicitly set to false.
+        try {
+            $pkgComposerFile = $this->pluginPackageRoot . DIRECTORY_SEPARATOR . 'composer.json';
+            if (is_file($pkgComposerFile)) {
+                $json = @json_decode(@file_get_contents($pkgComposerFile), true);
+                $pkgExtra = $json['extra']['open-boost'] ?? [];
+                $cdnDefined = isset($pkgExtra['resource_cdn']) && is_array($pkgExtra['resource_cdn']) && count($pkgExtra['resource_cdn']) > 0;
+                $autoInstall = $pkgExtra['auto_install_resources'] ?? true; // default true
+                $this->autoPublish = $pkgExtra['auto_publish'] ?? true; // default true
+                if ($cdnDefined && $autoInstall) {
+                    $shouldInstall = true;
+                }
+            }
+        } catch (\Throwable $e) {
+            // ignore
         }
 
         // 4) Interactive prompt: ask user if Composer is interactive
@@ -193,6 +214,16 @@ class Plugin implements PluginInterface
             }
 
             $this->io->write('<info>OpenBoost:</info> CDN resources configured at ' . $assetsDir);
+
+            // Optionally auto-publish to consuming project public assets
+            try {
+                if ($this->autoPublish) {
+                    $this->maybeAutoPublish();
+                }
+            } catch (\Throwable $e) {
+                $this->io->writeError('<error>OpenBoost:</error> auto-publish failed: ' . $e->getMessage());
+            }
+
             return;
         }
 
@@ -282,6 +313,37 @@ class Plugin implements PluginInterface
         }
 
         $this->io->write('<info>OpenBoost:</info> resources configured at ' . $assetsDir);
+    }
+
+    private function maybeAutoPublish()
+    {
+        // Determine consuming project root (vendor/../.. from plugin package root)
+        $consumingRoot = dirname($this->pluginPackageRoot, 3);
+        $artisan = $consumingRoot . DIRECTORY_SEPARATOR . 'artisan';
+        if (!is_file($artisan)) {
+            $this->io->write('<comment>OpenBoost:</comment> artisan not found in consuming project; skipping auto-publish.');
+            return;
+        }
+
+        $this->io->write('<info>OpenBoost:</info> running automatic vendor:publish to copy assets into public folder...');
+        $currentCwd = getcwd();
+        try {
+            chdir($consumingRoot);
+            $php = defined('PHP_BINARY') ? PHP_BINARY : 'php';
+            $cmd = escapeshellarg($php) . ' ' . escapeshellarg($artisan) . ' vendor:publish --provider="OpenBoost\\UI\\OpenBoostServiceProvider" --tag=open-boost-ui --force';
+            exec($cmd . ' 2>&1', $output, $ret);
+            foreach ($output as $line) {
+                $this->io->write('  ' . trim($line));
+            }
+            if ($ret !== 0) {
+                throw new \RuntimeException('vendor:publish command failed with code ' . $ret);
+            }
+            $this->io->write('<info>OpenBoost:</info> assets published to public/vendor/open-boost');
+        } finally {
+            if ($currentCwd) {
+                chdir($currentCwd);
+            }
+        }
     }
 
     private function findVendorPath()
