@@ -62,7 +62,8 @@ const OpenBoost = {
 
                 const options = {
                     minimumResultsForSearch: search ? 0 : Infinity,
-                    width: '100%'
+                    width: '100%',
+                    allowClear: true
                 };
                 
                 if (selectTheme) {
@@ -71,7 +72,13 @@ const OpenBoost = {
                 
                 try {
                     $(select).select2(options);
-                    console.log('Select2 initialized on:', select.id);
+                    
+                    // Ensure options are displayed
+                    $(select).on('select2:opening', function() {
+                        $(this).data('select2').$dropdown.find('.select2-search__field').attr('aria-label', 'Search');
+                    });
+                    
+                    console.log('Select2 initialized on:', select.id, 'with options:', select.querySelectorAll('option').length);
                 } catch (e) {
                     console.error('Select2 initialization error:', e);
                 }

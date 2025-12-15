@@ -4,6 +4,7 @@
     'search' => $search ?? true,
     'lib' => $lib ?? 'select2',
     'theme' => $theme ?? 'bootstrap', // 'bootstrap' (default) or 'tailwind'
+    'options' => [], // Array of options: ['value' => 'label']
 ])
 
 @php
@@ -23,5 +24,13 @@
         'class' => trim('openBoost-select ' . ($theme === 'bootstrap' ? 'form-select w-full' : 'block w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50')),
     ]) }}
 >
-    {{ $slot }}
+    @if ($slot->isNotEmpty())
+        {!! $slot !!}
+    @else
+        @forelse($options as $value => $label)
+            <option value="{{ $value }}">{{ $label }}</option>
+        @empty
+            <!-- No options provided -->
+        @endforelse
+    @endif
 </select>
