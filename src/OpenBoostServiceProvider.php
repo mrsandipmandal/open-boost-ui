@@ -41,12 +41,29 @@ class OpenBoostServiceProvider extends ServiceProvider
         ], 'open-boost-ui');
 
         // Register Blade components (using the correct namespace for views/components/openBoost/)
+        // Original components
         Blade::component('boost::components.openBoost.dropdown', 'openBoost-dropdown');
         Blade::component('boost::components.openBoost.modal', 'openBoost-modal');
         Blade::component('boost::components.openBoost.select', 'openBoost-select');
         Blade::component('boost::components.openBoost.datepicker', 'openBoost-datepicker');
         Blade::component('boost::components.openBoost.chart', 'openBoost-chart');
         Blade::component('boost::components.openBoost.editor', 'openBoost-editor');
+
+        // New Alpine.js-style components
+        Blade::component('boost::components.openBoost.accordion', 'openBoost-accordion');
+        Blade::component('boost::components.openBoost.accordionItem', 'openBoost-accordionItem');
+        Blade::component('boost::components.openBoost.carousel', 'openBoost-carousel');
+        Blade::component('boost::components.openBoost.carouselSlide', 'openBoost-carouselSlide');
+        Blade::component('boost::components.openBoost.tabs', 'openBoost-tabs');
+        Blade::component('boost::components.openBoost.tab', 'openBoost-tab');
+        Blade::component('boost::components.openBoost.radioGroup', 'openBoost-radioGroup');
+        Blade::component('boost::components.openBoost.radio', 'openBoost-radio');
+        Blade::component('boost::components.openBoost.toggle', 'openBoost-toggle');
+        Blade::component('boost::components.openBoost.tooltip', 'openBoost-tooltip');
+        Blade::component('boost::components.openBoost.notification', 'openBoost-notification');
+        Blade::component('boost::components.openBoost.datatable', 'openBoost-datatable');
+        Blade::component('boost::components.openBoost.list', 'openBoost-list');
+        Blade::component('boost::components.openBoost.listItem', 'openBoost-listItem');
 
         // Keep backward compatibility aliases
         Blade::component('boost::components.openBoost.dropdown', 'boost-dropdown');
