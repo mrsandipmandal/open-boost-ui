@@ -1,5 +1,5 @@
 <?php
-    use src\Services\AssetManager;
+    use OpenBoost\UI\Services\AssetManager;
 ?>
 @props([
     'id' => $id ?? 'openBoost-select-'.uniqid(),
