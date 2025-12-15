@@ -167,6 +167,322 @@ const OpenBoost = {
         });
     },
 
+    initAccordions() {
+        document.querySelectorAll('[data-openboost-accordion]').forEach(accordion => {
+            const allowMultiple = accordion.dataset.openboostAccordionMultiple === '1';
+            const items = accordion.querySelectorAll('[data-openboost-accordion-item]');
+
+            items.forEach(item => {
+                const trigger = item.querySelector('[data-openboost-accordion-trigger]');
+                const content = item.querySelector('[data-openboost-accordion-content]');
+                const icon = trigger?.querySelector('.openBoost-accordion-icon');
+
+                if (!trigger || !content) return;
+
+                trigger.addEventListener('click', () => {
+                    const isActive = item.dataset.openboostAccordionItemActive === '1';
+
+                    if (!allowMultiple) {
+                        items.forEach(sibling => {
+                            if (sibling !== item) {
+                                sibling.querySelector('[data-openboost-accordion-content]').classList.add('hidden');
+                                sibling.dataset.openboostAccordionItemActive = '0';
+                                const siblingIcon = sibling.querySelector('.openBoost-accordion-icon');
+                                if (siblingIcon) siblingIcon.style.transform = 'rotate(0deg)';
+                            }
+                        });
+                    }
+
+                    if (isActive) {
+                        content.classList.add('hidden');
+                        item.dataset.openboostAccordionItemActive = '0';
+                        trigger.setAttribute('aria-expanded', 'false');
+                        if (icon) icon.style.transform = 'rotate(0deg)';
+                    } else {
+                        content.classList.remove('hidden');
+                        item.dataset.openboostAccordionItemActive = '1';
+                        trigger.setAttribute('aria-expanded', 'true');
+                        if (icon) icon.style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+        });
+    },
+
+    initCarousels() {
+        document.querySelectorAll('[data-openboost-carousel]').forEach(carousel => {
+            const slides = carousel.querySelectorAll('[data-openboost-carousel-slide]');
+            const autoPlay = carousel.dataset.openboostCarouselAutoplay === '1';
+            const interval = parseInt(carousel.dataset.openboostCarouselInterval) || 5000;
+            const showIndicators = carousel.dataset.openboostCarouselIndicators === '1';
+            let currentIndex = 0;
+            let autoPlayInterval = null;
+
+            const showSlide = (index) => {
+                slides.forEach((slide, i) => {
+                    if (i === index) {
+                        slide.classList.remove('hidden');
+                    } else {
+                        slide.classList.add('hidden');
+                    }
+                });
+
+                if (showIndicators) {
+                    carousel.querySelectorAll('[data-openboost-carousel-indicator]').forEach((indicator, i) => {
+                        indicator.classList.toggle('bg-gray-800', i === index);
+                        indicator.classList.toggle('bg-gray-400', i !== index);
+                    });
+                }
+            };
+
+            const createIndicators = () => {
+                const indicatorsContainer = carousel.querySelector('[data-openboost-carousel-indicators]');
+                if (!indicatorsContainer) return;
+
+                slides.forEach((_, index) => {
+                    const indicator = document.createElement('button');
+                    indicator.type = 'button';
+                    indicator.setAttribute('data-openboost-carousel-indicator', 'true');
+                    indicator.setAttribute('aria-label', `Go to slide ${index + 1}`);
+                    indicator.className = `w-3 h-3 rounded-full transition-colors ${index === 0 ? 'bg-gray-800' : 'bg-gray-400'}`;
+                    indicator.addEventListener('click', () => {
+                        currentIndex = index;
+                        showSlide(currentIndex);
+                        clearInterval(autoPlayInterval);
+                        if (autoPlay) startAutoPlay();
+                    });
+                    indicatorsContainer.appendChild(indicator);
+                });
+            };
+
+            const nextSlide = () => {
+                currentIndex = (currentIndex + 1) % slides.length;
+                showSlide(currentIndex);
+            };
+
+            const prevSlide = () => {
+                currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+                showSlide(currentIndex);
+            };
+
+            const startAutoPlay = () => {
+                if (autoPlay) {
+                    autoPlayInterval = setInterval(nextSlide, interval);
+                }
+            };
+
+            carousel.querySelector('[data-openboost-carousel-next]')?.addEventListener('click', () => {
+                nextSlide();
+                clearInterval(autoPlayInterval);
+                if (autoPlay) startAutoPlay();
+            });
+
+            carousel.querySelector('[data-openboost-carousel-prev]')?.addEventListener('click', () => {
+                prevSlide();
+                clearInterval(autoPlayInterval);
+                if (autoPlay) startAutoPlay();
+            });
+
+            if (slides.length > 0) {
+                if (showIndicators) createIndicators();
+                showSlide(0);
+                startAutoPlay();
+            }
+        });
+    },
+
+    initTabs() {
+        document.querySelectorAll('[data-openboost-tabs]').forEach(tabsContainer => {
+            const triggers = tabsContainer.querySelectorAll('[data-openboost-tab-trigger]');
+            const panels = tabsContainer.querySelectorAll('[data-openboost-tab-panel]');
+
+            triggers.forEach((trigger, index) => {
+                trigger.addEventListener('click', () => {
+                    triggers.forEach(t => {
+                        t.setAttribute('aria-selected', 'false');
+                        t.dataset.openboostTabActive = '0';
+                        t.classList.remove('border-blue-500', 'text-blue-600');
+                        t.classList.add('border-transparent', 'text-gray-600');
+                    });
+
+                    panels.forEach(panel => {
+                        panel.classList.add('hidden');
+                        panel.dataset.openboostTabActive = '0';
+                    });
+
+                    trigger.setAttribute('aria-selected', 'true');
+                    trigger.dataset.openboostTabActive = '1';
+                    trigger.classList.add('border-blue-500', 'text-blue-600');
+                    trigger.classList.remove('border-transparent', 'text-gray-600');
+                    
+                    if (panels[index]) {
+                        panels[index].classList.remove('hidden');
+                        panels[index].dataset.openboostTabActive = '1';
+                    }
+                });
+            });
+        });
+    },
+
+    initRadioGroups() {
+        document.querySelectorAll('[data-openboost-radiogroup]').forEach(group => {
+            const radios = group.querySelectorAll('[data-openboost-radio-input]');
+            radios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    radios.forEach(r => {
+                        r.parentElement.dataset.openboostRadioChecked = r.checked ? '1' : '0';
+                    });
+                });
+            });
+        });
+    },
+
+    initToggles() {
+        document.querySelectorAll('[data-openboost-toggle]').forEach(toggle => {
+            const input = toggle.querySelector('[data-openboost-toggle-input]');
+            const track = toggle.querySelector('[data-openboost-toggle-track]');
+            const thumb = toggle.querySelector('[data-openboost-toggle-thumb]');
+
+            if (!input) return;
+
+            const updateToggle = () => {
+                if (input.checked) {
+                    track.classList.add('bg-blue-500');
+                    track.classList.remove('bg-gray-300');
+                    thumb.style.transform = 'translateX(1.5rem)';
+                } else {
+                    track.classList.remove('bg-blue-500');
+                    track.classList.add('bg-gray-300');
+                    thumb.style.transform = 'translateX(0)';
+                }
+            };
+
+            input.addEventListener('change', updateToggle);
+            updateToggle();
+        });
+    },
+
+    initTooltips() {
+        document.querySelectorAll('[data-openboost-tooltip]').forEach(tooltip => {
+            const content = tooltip.querySelector('[data-openboost-tooltip-content]');
+            if (!content) return;
+
+            tooltip.addEventListener('mouseenter', () => {
+                content.classList.remove('hidden');
+            });
+
+            tooltip.addEventListener('mouseleave', () => {
+                content.classList.add('hidden');
+            });
+
+            tooltip.addEventListener('focus', () => {
+                content.classList.remove('hidden');
+            }, true);
+
+            tooltip.addEventListener('blur', () => {
+                content.classList.add('hidden');
+            }, true);
+        });
+    },
+
+    initNotifications() {
+        document.querySelectorAll('[data-openboost-notification]').forEach(notification => {
+            const dismissButton = notification.querySelector('[data-openboost-notification-close]');
+            const autoClose = notification.dataset.openboostNotificationAutoclose === '1';
+            const closeDelay = parseInt(notification.dataset.openboostNotificationDelay) || 5000;
+
+            const removeNotification = () => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            };
+
+            if (dismissButton) {
+                dismissButton.addEventListener('click', removeNotification);
+            }
+
+            if (autoClose) {
+                setTimeout(removeNotification, closeDelay);
+            }
+        });
+    },
+
+    initDatatables() {
+        document.querySelectorAll('[data-openboost-datatable]').forEach(table => {
+            const tbody = table.querySelector('tbody');
+            if (!tbody) return;
+
+            const rows = tbody.querySelectorAll('tr');
+            rows.forEach(row => {
+                row.classList.add('hover:bg-gray-100');
+            });
+        });
+    },
+
+    initLists() {
+        document.querySelectorAll('[data-openboost-list]').forEach(list => {
+            const items = list.querySelectorAll('[data-openboost-list-item]');
+            const perPage = parseInt(list.dataset.openboostListPerpage) || 10;
+            let currentPage = 1;
+
+            const totalPages = Math.ceil(items.length / perPage);
+            const prevBtn = list.querySelector('[data-openboost-list-prev]');
+            const nextBtn = list.querySelector('[data-openboost-list-next]');
+            const pagesContainer = list.querySelector('[data-openboost-list-pages]');
+
+            const renderPage = (page) => {
+                const start = (page - 1) * perPage;
+                const end = start + perPage;
+
+                items.forEach((item, index) => {
+                    item.style.display = index >= start && index < end ? 'block' : 'none';
+                });
+
+                prevBtn.disabled = page === 1;
+                nextBtn.disabled = page === totalPages;
+
+                if (pagesContainer) {
+                    pagesContainer.innerHTML = '';
+                    for (let i = 1; i <= totalPages; i++) {
+                        const pageBtn = document.createElement('button');
+                        pageBtn.type = 'button';
+                        pageBtn.textContent = i;
+                        pageBtn.className = `px-3 py-1 border rounded transition-colors ${
+                            i === page ? 'bg-blue-500 text-white' : 'border-gray-300 hover:bg-gray-100'
+                        }`;
+                        pageBtn.addEventListener('click', () => {
+                            currentPage = i;
+                            renderPage(currentPage);
+                        });
+                        pagesContainer.appendChild(pageBtn);
+                    }
+                }
+            };
+
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        renderPage(currentPage);
+                    }
+                });
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        renderPage(currentPage);
+                    }
+                });
+            }
+
+            if (items.length > 0) {
+                renderPage(1);
+            }
+        });
+    },
+
     initAll() {
         this.initDropdowns();
         this.initModals();
@@ -174,6 +490,15 @@ const OpenBoost = {
         this.initDatepickers();
         this.initCharts();
         this.initEditors();
+        this.initAccordions();
+        this.initCarousels();
+        this.initTabs();
+        this.initRadioGroups();
+        this.initToggles();
+        this.initTooltips();
+        this.initNotifications();
+        this.initDatatables();
+        this.initLists();
     },
 
     // Debug helper - call OpenBoost.debug() in console to check setup
@@ -199,6 +524,15 @@ const OpenBoost = {
         console.log('Editors:', document.querySelectorAll('[data-openboost-editor]').length);
         console.log('Dropdowns:', document.querySelectorAll('[data-openboost-dropdown]').length);
         console.log('Modals:', document.querySelectorAll('[data-openboost-modal]').length);
+        console.log('Accordions:', document.querySelectorAll('[data-openboost-accordion]').length);
+        console.log('Carousels:', document.querySelectorAll('[data-openboost-carousel]').length);
+        console.log('Tabs:', document.querySelectorAll('[data-openboost-tabs]').length);
+        console.log('Radio Groups:', document.querySelectorAll('[data-openboost-radiogroup]').length);
+        console.log('Toggles:', document.querySelectorAll('[data-openboost-toggle]').length);
+        console.log('Tooltips:', document.querySelectorAll('[data-openboost-tooltip]').length);
+        console.log('Notifications:', document.querySelectorAll('[data-openboost-notification]').length);
+        console.log('Datatables:', document.querySelectorAll('[data-openboost-datatable]').length);
+        console.log('Lists:', document.querySelectorAll('[data-openboost-list]').length);
         console.groupEnd();
 
         console.groupEnd();
