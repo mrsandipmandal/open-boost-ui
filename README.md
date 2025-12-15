@@ -1,42 +1,37 @@
-# Open Boost UI (open-boost/open-boost-ui)
+# 🚀 OpenBoost UI - Professional Blade Components Library
 
-Laravel Blade components and integrated frontend libraries (Select2, Choices, Flatpickr, Chart.js, ApexCharts, Quill, SimpleMDE, Trix, DataTables) with bundled assets — **no external npm/Composer dependencies needed**.
+[![Latest Stable Version](https://img.shields.io/packagist/v/open-boost/open-boost-ui.svg?style=flat-square)](https://packagist.org/packages/open-boost/open-boost-ui)
+[![License](https://img.shields.io/packagist/l/open-boost/open-boost-ui.svg?style=flat-square)](LICENSE.txt)
+[![PHP Version](https://img.shields.io/packagist/php-v/open-boost/open-boost-ui.svg?style=flat-square)](https://packagist.org/packages/open-boost/open-boost-ui)
 
----
+**A comprehensive, production-ready Blade component library for Laravel** with 15+ pre-built UI components inspired by Alpine.js and modern component frameworks.
 
-## ⚠️ IMPORTANT: If Select2/Libraries Not Working
+### ✨ Key Features
 
-**If you installed before December 8, 2025**, the old plugin created empty placeholder files.
-
-**Fix it immediately:**
-```bash
-# In your consuming project:
-php artisan openboost:install-resources
-# Answer: Y
-
-php artisan vendor:publish --provider=OpenBoost\\UI\\OpenBoostServiceProvider --tag=open-boost-ui --force
-```
-
-See [FIX_SELECT2.md](FIX_SELECT2.md) for complete details.
+- 🎨 **15+ Ready-to-Use Components** - Accordion, Carousel, Tabs, Modals, Selects, Datepickers, Charts, and more
+- 📦 **Zero External Dependencies** - All assets bundled, no npm required
+- 🎯 **Auto-Initialization** - Components initialize automatically with vanilla JavaScript
+- ♿ **Fully Accessible** - ARIA attributes, keyboard navigation, semantic HTML
+- 🎭 **Multiple Themes** - Bootstrap 5 and Tailwind CSS support
+- 📱 **Responsive Design** - Mobile-first, works on all devices
+- ⚡ **Performance Optimized** - Lazy-loaded, minimal JavaScript footprint
+- 🔌 **Framework Agnostic** - Works with any Laravel version 9+
 
 ---
 
 ## ⚡ Quick Start (3 Steps)
 
 ### 1. Install Package
-```powershell
+```bash
 composer require open-boost/open-boost-ui
 ```
-When prompted: **Answer `Y`** to download and configure frontend library assets.
 
-### 2. Publish Assets to Public
-```powershell
+### 2. Publish Assets
+```bash
 php artisan vendor:publish --provider=OpenBoost\\UI\\OpenBoostServiceProvider --tag=open-boost-ui --force
 ```
 
-### 3. Add Two Directives to Your Layout
-
-In `resources/views/layouts/app.blade.php`:
+### 3. Add to Your Layout (`resources/views/layouts/app.blade.php`)
 
 **In `<head>`:**
 ```blade
@@ -48,17 +43,17 @@ In `resources/views/layouts/app.blade.php`:
 @openBoostScripts
 ```
 
-### ✅ Done! Now Use Components:
+### ✅ Done! Use Any Component:
 
 ```blade
-<x-openBoost-select name="tags" lib="select2" theme="bootstrap">
+<x-openBoost-select name="tags" lib="select2">
     <option value="">Select tags...</option>
     <option value="php">PHP</option>
     <option value="laravel">Laravel</option>
 </x-openBoost-select>
 ```
 
-**That's it!** Assets load automatically when components are used. No manual script tags needed! 🎉
+**That's it!** No manual script includes needed! 🎉
 
 ---
 
