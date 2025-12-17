@@ -1,5 +1,6 @@
 {
   "name": "open-boost/open-boost-ui",
+  "version": "1.0.3",
   "description": "Laravel Blade components + JS integration for Dropdown, Modals, Select2, Flatpickr, Charts, Editors etc. A powerful Bootstrap-ready UI component library.",
   "type": "composer-plugin",
   "license": "MIT",
