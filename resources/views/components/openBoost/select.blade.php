@@ -11,13 +11,12 @@
     use OpenBoost\UI\Services\AssetManager;
     AssetManager::isRequired($lib) || AssetManager::require($lib);
     
-    // Build classes safely as string
-    $selectClasses = 'openBoost-select ';
-    if ($theme === 'bootstrap') {
-        $selectClasses .= 'form-select w-full';
-    } else {
-        $selectClasses .= 'block w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50';
-    }
+    // Build classes safely as string - ensure it's always a string
+    $baseClasses = 'openBoost-select';
+    $themeClasses = ($theme === 'bootstrap') 
+        ? 'form-select w-full' 
+        : 'block w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50';
+    $selectClasses = $baseClasses . ' ' . $themeClasses;
 @endphp
 
 <select
