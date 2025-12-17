@@ -10,6 +10,14 @@
 @php
     use OpenBoost\UI\Services\AssetManager;
     AssetManager::isRequired($lib) || AssetManager::require($lib);
+    
+    // Build classes safely as string
+    $selectClasses = 'openBoost-select ';
+    if ($theme === 'bootstrap') {
+        $selectClasses .= 'form-select w-full';
+    } else {
+        $selectClasses .= 'block w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50';
+    }
 @endphp
 
 <select
@@ -20,17 +28,14 @@
     data-openboost-select-lib="{{ $lib }}"
     data-openboost-select-search="{{ $search ? '1' : '0' }}"
     data-openboost-select-theme="{{ $theme === 'bootstrap' ? 'bootstrap-5' : '' }}"
-    {{ $attributes->merge([
-        'class' => 'openBoost-select ' . ($theme === 'bootstrap' ? 'form-select w-full' : 'block w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'),
-    ]) }}
+    {{ $attributes->merge(['class' => $selectClasses]) }}
 >
-    @if ($slot->isNotEmpty())
-        {!! $slot !!}
-    @else
+    @if (is_array($options) && count($options) > 0)
         @forelse($options as $value => $label)
             <option value="{{ $value }}">{{ $label }}</option>
         @empty
-            <!-- No options provided -->
         @endforelse
+    @elseif ($slot->isNotEmpty())
+        {!! $slot !!}
     @endif
 </select>
