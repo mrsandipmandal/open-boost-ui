@@ -1,8 +1,8 @@
 <?php return array(
     'root' => array(
         'name' => 'open-boost/open-boost-ui',
-        'pretty_version' => '1.0.3',
-        'version' => '1.0.3.0',
+        'pretty_version' => '1.0.0+no-version-set',
+        'version' => '1.0.0.0',
         'reference' => null,
         'type' => 'composer-plugin',
         'install_path' => __DIR__ . '/../../',
@@ -83,8 +83,8 @@
             'dev_requirement' => false,
         ),
         'open-boost/open-boost-ui' => array(
-            'pretty_version' => '1.0.3',
-            'version' => '1.0.3.0',
+            'pretty_version' => '1.0.0+no-version-set',
+            'version' => '1.0.0.0',
             'reference' => null,
             'type' => 'composer-plugin',
             'install_path' => __DIR__ . '/../../',
