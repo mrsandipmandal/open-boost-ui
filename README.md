@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/packagist/l/open-boost/open-boost-ui.svg?style=flat-square)](LICENSE.txt)
 [![PHP Version](https://img.shields.io/packagist/php-v/open-boost/open-boost-ui.svg?style=flat-square)](https://packagist.org/packages/open-boost/open-boost-ui)
 
-**A comprehensive, production-ready Blade component library for Laravel** with 15+ pre-built UI components inspired by Alpine.js and modern component frameworks.
+**A comprehensive, production-ready Blade component library for Laravel** with 15+ pre-built UI components for Bootstrap -5, Tailwind CSS, and modern component frameworks.
 
 ### ✨ Key Features
 
