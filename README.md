@@ -1017,9 +1017,9 @@ MIT License © 2024 [Sandip Mandal](https://github.com/mrsandipmandal). See [LIC
 ## 🙏 Credits
 
 Built with modern best practices inspired by:
-- [Alpine.js](https://alpinejs.dev)
 - [Laravel Blade Components](https://laravel.com/docs/blade#components)
 - [Tailwind CSS](https://tailwindcss.com)
+- [Bootstrap 5](https://getbootstrap.com/)
 - Select2, Flatpickr, Chart.js, and other amazing open-source libraries
 
 ---
