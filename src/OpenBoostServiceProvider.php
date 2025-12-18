@@ -40,6 +40,31 @@ class OpenBoostServiceProvider extends ServiceProvider
             __DIR__ . '/../resources/views' => resource_path('views/vendor/boost'),
         ], 'open-boost-ui');
 
+        // Auto-publish fallback: if package resources exist but haven't been published
+        // (common when the package is installed from a local path repo), copy them
+        // into the application's public/resource paths to ensure assets are available.
+        try {
+            $srcJs = __DIR__ . '/../resources/js';
+            $srcAssets = __DIR__ . '/../resources/assets';
+            $srcViews = __DIR__ . '/../resources/views';
+
+            $dstJs = public_path('vendor/open-boost/js');
+            $dstAssets = public_path('vendor/open-boost/assets');
+            $dstViews = resource_path('views/vendor/boost');
+
+            if (is_dir($srcJs) && !is_dir($dstJs)) {
+                self::copyDirectory($srcJs, $dstJs);
+            }
+            if (is_dir($srcAssets) && !is_dir($dstAssets)) {
+                self::copyDirectory($srcAssets, $dstAssets);
+            }
+            if (is_dir($srcViews) && !is_dir($dstViews)) {
+                self::copyDirectory($srcViews, $dstViews);
+            }
+        } catch (\Throwable $e) {
+            // noop: don't interrupt app boot if auto-publish fails
+        }
+
         // Register Blade components (using the correct namespace for views/components/openBoost/)
         // Original components
         Blade::component('boost::components.openBoost.dropdown', 'openBoost-dropdown');
@@ -84,4 +109,29 @@ class OpenBoostServiceProvider extends ServiceProvider
             return $html;
         });
     }
+
+    /**
+     * Recursively copy a directory's contents.
+     * Uses a simple PHP implementation to avoid adding extra dependencies.
+     */
+    protected static function copyDirectory(string $src, string $dst)
+    {
+        if (!is_dir($src)) return;
+        @mkdir($dst, 0755, true);
+
+        $items = scandir($src);
+        foreach ($items as $item) {
+            if ($item === '.' || $item === '..') continue;
+
+            $s = $src . DIRECTORY_SEPARATOR . $item;
+            $d = $dst . DIRECTORY_SEPARATOR . $item;
+
+            if (is_dir($s)) {
+                self::copyDirectory($s, $d);
+            } else {
+                @copy($s, $d);
+            }
+        }
+    }
 }
+
