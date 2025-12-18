@@ -10,6 +10,14 @@
     \OpenBoost\UI\Services\AssetManager::require($lib);
 @endphp
 
+@push('openBoostAssets')
+    {!! \OpenBoost\UI\Services\AssetManager::getCSSFor($lib) !!}
+@endpush
+
+@push('openBoostScripts')
+    {!! \OpenBoost\UI\Services\AssetManager::getJSFor($lib) !!}
+@endpush
+
 <input
     type="text"
     id="{{ $id }}"

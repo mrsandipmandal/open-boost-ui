@@ -1,0 +1,14 @@
+/* Flatpickr minified CSS (fetched from CDN) */
+.flatpickr-calendar{background:transparent;opacity:0;display:none;text-align:center;visibility:hidden;padding:0;animation:none;direction:ltr;border:0;font-size:14px;line-height:24px;border-radius:5px;position:absolute;width:307.875px;box-sizing:border-box;background:#fff;box-shadow:1px 0 0 #e6e6e6,-1px 0 0 #e6e6e6,0 1px 0 #e6e6e6,0 -1px 0 #e6e6e6,0 3px 13px rgba(0,0,0,0.08);}
+.flatpickr-calendar.open,.flatpickr-calendar.inline{opacity:1;max-height:640px;visibility:visible}
+.flatpickr-calendar.open{display:inline-block;z-index:99999}
+.flatpickr-wrapper{position:relative;display:inline-block}
+.flatpickr-months{display:flex}
+.flatpickr-current-month{font-size:135%;font-weight:300;color:inherit;display:inline-block;padding:7px 0}
+.flatpickr-days{display:flex;flex-wrap:wrap;}
+.flatpickr-day{background:none;border:1px solid transparent;border-radius:150px;box-sizing:border-box;color:#393939;cursor:pointer;width:14.2857143%;flex-basis:14.2857143%;max-width:39px;height:39px;line-height:39px;margin:0;display:inline-block}
+.flatpickr-day.today{border-color:#959ea9}
+.flatpickr-day:hover{border-color:#e6e6e6}
+.flatpickr-time{height:40px;border-top:1px solid #e6e6e6}
+.flatpickr-input[readonly]{cursor:pointer}
+@keyframes fpFadeInDown{from{opacity:0;transform:translate3d(0,-20px,0)}to{opacity:1;transform:translate3d(0,0,0)}}

@@ -10,6 +10,18 @@
 @php
     use OpenBoost\UI\Services\AssetManager;
     AssetManager::isRequired($lib) || AssetManager::require($lib);
+
+    // Push CSS/JS for this library into Blade stacks so @openBoostAssets/@openBoostScripts
+    // (which may be placed before component rendering) still receive the correct tags.
+    ?>
+    @push('openBoostAssets')
+        {!! \OpenBoost\UI\Services\AssetManager::getCSSFor($lib) !!}
+    @endpush
+
+    @push('openBoostScripts')
+        {!! \OpenBoost\UI\Services\AssetManager::getJSFor($lib) !!}
+    @endpush
+    <?php
     
     // Build classes safely as string - ensure it's always a string
     $baseClasses = 'openBoost-select';
