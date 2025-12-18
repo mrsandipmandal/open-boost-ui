@@ -92,7 +92,9 @@ class AssetManager
             if (isset($assetMap[$library])) {
                 foreach ($assetMap[$library] as $css) {
                     $localPath = $basePath . $css;
-                    if (is_file($localPath)) {
+                    // If local file exists but appears to be a small placeholder file (created by installer),
+                    // prefer CDN fallback so real styles/scripts are loaded.
+                    if (is_file($localPath) && filesize($localPath) > 200) {
                         $html .= '<link href="' . asset('vendor/open-boost/' . $css) . '" rel="stylesheet">' . "\n";
                     } elseif (isset($cdnMap[$library]['css'])) {
                         foreach ($cdnMap[$library]['css'] as $cdnCss) {
@@ -153,7 +155,8 @@ class AssetManager
         // Ensure jQuery is available (local if published, otherwise CDN)
         if (!empty(self::$requiredAssets)) {
             $localJq = $basePath . 'assets/jquery/jquery.min.js';
-            if (is_file($localJq)) {
+            // prefer CDN when local jQuery is a very small placeholder file
+            if (is_file($localJq) && filesize($localJq) > 200) {
                 $html .= '<script src="' . asset('vendor/open-boost/assets/jquery/jquery.min.js') . '"></script>' . "\n";
             } elseif (isset($cdnMap['jquery']['js'])) {
                 foreach ($cdnMap['jquery']['js'] as $cdn) {
