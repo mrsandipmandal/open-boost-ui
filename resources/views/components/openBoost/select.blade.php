@@ -14,7 +14,7 @@
     // Build classes safely as string - ensure it's always a string
     $baseClasses = 'openBoost-select';
     $themeClasses = ($theme === 'bootstrap') 
-        ? 'form-select w-full' 
+        ? 'form-select' 
         : 'block w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50';
     $selectClasses = $baseClasses . ' ' . $themeClasses;
 @endphp
@@ -35,6 +35,7 @@
     data-openboost-select-lib="{{ $lib }}"
     data-openboost-select-search="{{ $search ? '1' : '0' }}"
     data-openboost-select-theme="{{ $theme === 'bootstrap' ? 'bootstrap-5' : '' }}"
+    data-openboost-select-multiple="{{ $multiple ? '1' : '0' }}"
     {{ $attributes->merge(['class' => $selectClasses]) }}
 >
     @if (is_array($options) && count($options) > 0)

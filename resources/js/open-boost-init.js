@@ -60,10 +60,12 @@ const OpenBoost = {
                     return;
                 }
 
+                const isMultiple = select.hasAttribute('multiple');
                 const options = {
                     minimumResultsForSearch: search ? 0 : Infinity,
                     width: '100%',
-                    allowClear: true
+                    allowClear: true,
+                    multiple: isMultiple  // Explicitly set based on HTML attribute
                 };
                 
                 if (selectTheme) {
@@ -78,7 +80,7 @@ const OpenBoost = {
                         $(this).data('select2').$dropdown.find('.select2-search__field').attr('aria-label', 'Search');
                     });
                     
-                    console.log('Select2 initialized on:', select.id, 'with options:', select.querySelectorAll('option').length);
+                    console.log('Select2 initialized on:', select.id, 'with options:', select.querySelectorAll('option').length, 'multiple:', isMultiple);
                 } catch (e) {
                     console.error('Select2 initialization error:', e);
                 }
