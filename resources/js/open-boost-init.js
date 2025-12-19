@@ -60,20 +60,38 @@ const OpenBoost = {
                     return;
                 }
 
-                const isMultiple = select.hasAttribute('multiple');
+                // Detect multiple mode from either the HTML attribute or the name attribute (ending with [])
+                const hasMultipleAttr = select.hasAttribute('multiple');
+                const hasMultipleName = select.name && select.name.endsWith('[]');
+                const isMultiple = hasMultipleAttr || hasMultipleName;
+                
+                // Ensure the multiple attribute is set
+                if (isMultiple && !hasMultipleAttr) {
+                    select.setAttribute('multiple', 'multiple');
+                }
+                
                 const options = {
                     minimumResultsForSearch: search ? 0 : Infinity,
                     width: '100%',
                     allowClear: true
-                    // Note: Do NOT set 'multiple' in options - Select2 detects it from the HTML attribute
                 };
                 
                 if (selectTheme) {
                     options.theme = selectTheme;
                 }
                 
+                // IMPORTANT: Explicitly handle multiple mode
+                if (isMultiple) {
+                    options.placeholder = select.dataset.placeholder || 'Select options...';
+                }
+                
                 try {
                     $(select).select2(options);
+                    
+                    // Ensure the multiple property is set on the DOM element
+                    if (isMultiple) {
+                        select.multiple = true;
+                    }
                     
                     // Ensure options are displayed
                     $(select).on('select2:opening', function() {
@@ -86,7 +104,7 @@ const OpenBoost = {
                         }
                     });
                     
-                    console.log('Select2 initialized on:', select.id, 'with options:', select.querySelectorAll('option').length, 'multiple:', isMultiple);
+                    console.log('Select2 initialized on:', select.id, 'name:', select.name, 'with options:', select.querySelectorAll('option').length, 'multiple:', isMultiple);
                 } catch (e) {
                     console.error('Select2 initialization error:', e);
                 }
