@@ -1,0 +1,186 @@
+/**
+ * OpenBoost Component Styles
+ * Custom styling for OpenBoost UI components
+ */
+
+/* Select2 Multiple Select Fixes */
+.openBoost-select.select2-hidden-accessible ~ .select2-container {
+    width: 100% !important;
+}
+
+.openBoost-select[multiple] ~ .select2-container--bootstrap-5 {
+    width: 100% !important;
+}
+
+.select2-container--bootstrap-5.select2-container--multiple .select2-selection--multiple {
+    min-height: calc(1.5em + 0.75rem + 2px);
+}
+
+.select2-container--bootstrap-5.select2-container--multiple .select2-selection--multiple .select2-selection__choice {
+    background-color: #0d6efd;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    margin: 0.25rem;
+    border-radius: 0.25rem;
+}
+
+.select2-container--bootstrap-5.select2-container--multiple .select2-selection--multiple .select2-selection__choice__remove {
+    color: white;
+    margin-right: 0.25rem;
+    cursor: pointer;
+}
+
+.select2-container--bootstrap-5.select2-container--multiple .select2-selection--multiple .select2-selection__choice__remove:hover {
+    text-decoration: underline;
+}
+
+/* Ensure proper display of dropdown for multiple selects */
+.select2-container--open .select2-dropdown--below {
+    border-top: none;
+}
+
+.select2-results__option[aria-selected] {
+    padding-left: 1.5rem;
+}
+
+.select2-results__option[data-selected="true"] {
+    background-color: #e7f3ff;
+}
+
+/* Form Select Styling */
+.openBoost-select.form-select {
+    display: block !important;
+}
+
+.openBoost-select[multiple].form-select {
+    height: auto;
+    min-height: calc(1.5em + 0.75rem + 2px);
+}
+
+/* Accordion Styling */
+.openBoost-accordion.accordion {
+    margin-bottom: 1rem;
+}
+
+.accordion-button {
+    padding: 1rem;
+    font-weight: 500;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #e7f3ff;
+    color: #0d6efd;
+}
+
+/* Tab Styling */
+.openBoost-tabs {
+    margin-bottom: 1rem;
+}
+
+.openBoost-tabs.nav-tabs {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.openBoost-tabs .nav-link {
+    color: #495057;
+    border: 1px solid transparent;
+}
+
+.openBoost-tabs .nav-link.active {
+    color: #0d6efd;
+    border-color: #dee2e6 #dee2e6 #fff;
+    background-color: #fff;
+}
+
+/* Notification Styling */
+.openBoost-notification {
+    margin-bottom: 1rem;
+}
+
+/* Carousel Styling */
+.openBoost-carousel.carousel {
+    margin-bottom: 1rem;
+}
+
+/* List Styling */
+.openBoost-list .list-group-item {
+    border: 1px solid #dee2e6;
+    padding: 0.75rem 1.25rem;
+}
+
+.openBoost-list .list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Toggle Styling */
+.openBoost-toggle .form-check-input {
+    width: 3rem;
+    height: 1.5rem;
+}
+
+.openBoost-toggle .form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* Radio Group Styling */
+.openBoost-radiogroup .form-check {
+    margin-bottom: 0.5rem;
+}
+
+/* Tooltip Styling */
+.openBoost-tooltip-content {
+    background-color: #212529;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    z-index: 1070;
+}
+
+/* Dropdown Styling */
+.openBoost-dropdown.dropdown {
+    display: inline-block;
+}
+
+.dropdown-menu {
+    min-width: 12rem;
+}
+
+/* Datepicker Styling */
+.openBoost-datepicker {
+    width: 100%;
+}
+
+.flatpickr-calendar {
+    width: auto;
+    box-shadow: 0 3px 13px rgba(0, 0, 0, 0.08);
+}
+
+/* Editor Styling */
+.openBoost-editor {
+    margin-bottom: 1rem;
+}
+
+.ql-container {
+    font-size: 1rem;
+}
+
+/* Chart Styling */
+.openBoost-chart {
+    margin-bottom: 1rem;
+}
+
+/* Datatable Styling */
+.openBoost-datatable.table-responsive {
+    margin-bottom: 1rem;
+}
+
+.openBoost-datatable .table {
+    margin-bottom: 0;
+}
+
+.openBoost-datatable .table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}

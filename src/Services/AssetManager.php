@@ -49,6 +49,9 @@ class AssetManager
     public static function getCSSLinks()
     {
         $html = '';
+        
+        // Always include OpenBoost component CSS
+        $html .= '<link href="' . asset('vendor/open-boost/css/open-boost.css') . '" rel="stylesheet">' . "\n";
 
         $assetMap = [
             'select2' => ['assets/select2/select2.min.css'],

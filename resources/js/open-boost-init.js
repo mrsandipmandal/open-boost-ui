@@ -65,32 +65,43 @@ const OpenBoost = {
                 const hasMultipleName = select.name && select.name.endsWith('[]');
                 const isMultiple = hasMultipleAttr || hasMultipleName;
                 
-                // Ensure the multiple attribute is set
-                if (isMultiple && !hasMultipleAttr) {
+                // CRITICAL: Ensure the multiple attribute is set BEFORE Select2 initialization
+                if (isMultiple) {
                     select.setAttribute('multiple', 'multiple');
+                    select.multiple = true;
+                }
+                
+                // Destroy existing Select2 instance if it exists
+                if ($(select).hasClass('select2-hidden-accessible')) {
+                    try {
+                        $(select).select2('destroy');
+                    } catch (e) {
+                        // Ignore destroy errors
+                    }
                 }
                 
                 const options = {
                     minimumResultsForSearch: search ? 0 : Infinity,
                     width: '100%',
-                    allowClear: true
+                    allowClear: true,
+                    closeOnSelect: !isMultiple // Keep dropdown open for multiple select
                 };
                 
                 if (selectTheme) {
                     options.theme = selectTheme;
                 }
                 
-                // IMPORTANT: Explicitly handle multiple mode
-                if (isMultiple) {
-                    options.placeholder = select.dataset.placeholder || 'Select options...';
-                }
-                
                 try {
+                    // Initialize Select2 with proper configuration
                     $(select).select2(options);
                     
-                    // Ensure the multiple property is set on the DOM element
-                    if (isMultiple) {
-                        select.multiple = true;
+                    // Verify multiple mode is active
+                    const select2Instance = $(select).data('select2');
+                    if (select2Instance && isMultiple) {
+                        // Force the container to show multiple mode
+                        if (select2Instance.$container) {
+                            select2Instance.$container.addClass('select2-container--multiple');
+                        }
                     }
                     
                     // Ensure options are displayed
@@ -104,9 +115,15 @@ const OpenBoost = {
                         }
                     });
                     
-                    console.log('Select2 initialized on:', select.id, 'name:', select.name, 'with options:', select.querySelectorAll('option').length, 'multiple:', isMultiple);
+                    // Handle change event to show selected values
+                    $(select).on('change', function() {
+                        console.log('Select2 change event - selected values:', $(this).val());
+                    });
+                    
+                    console.log('Select2 initialized on:', select.id, 'name:', select.name, 'options:', select.querySelectorAll('option').length, 'multiple:', isMultiple, 'classes:', select.className);
                 } catch (e) {
                     console.error('Select2 initialization error:', e);
+                    console.error('Select element:', select);
                 }
             } else if (lib === 'choices') {
                 // Choices.js must be loaded before this
