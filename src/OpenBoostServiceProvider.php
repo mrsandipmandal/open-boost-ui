@@ -37,6 +37,10 @@ class OpenBoostServiceProvider extends ServiceProvider
         ], 'open-boost-ui');
 
         $this->publishes([
+            __DIR__ . '/../resources/css' => public_path('vendor/open-boost/css'),
+        ], 'open-boost-ui');
+
+        $this->publishes([
             __DIR__ . '/../resources/views' => resource_path('views/vendor/boost'),
         ], 'open-boost-ui');
 
@@ -46,10 +50,12 @@ class OpenBoostServiceProvider extends ServiceProvider
         try {
             $srcJs = __DIR__ . '/../resources/js';
             $srcAssets = __DIR__ . '/../resources/assets';
+            $srcCss = __DIR__ . '/../resources/css';
             $srcViews = __DIR__ . '/../resources/views';
 
             $dstJs = public_path('vendor/open-boost/js');
             $dstAssets = public_path('vendor/open-boost/assets');
+            $dstCss = public_path('vendor/open-boost/css');
             $dstViews = resource_path('views/vendor/boost');
 
             if (is_dir($srcJs) && !is_dir($dstJs)) {
@@ -57,6 +63,9 @@ class OpenBoostServiceProvider extends ServiceProvider
             }
             if (is_dir($srcAssets) && !is_dir($dstAssets)) {
                 self::copyDirectory($srcAssets, $dstAssets);
+            }
+            if (is_dir($srcCss) && !is_dir($dstCss)) {
+                self::copyDirectory($srcCss, $dstCss);
             }
             if (is_dir($srcViews) && !is_dir($dstViews)) {
                 self::copyDirectory($srcViews, $dstViews);
