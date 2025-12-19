@@ -11,11 +11,14 @@
         'class' => 'openBoost-tabs',
     ]) }}
 >
-    <div
+    <ul
         role="tablist"
         data-openboost-tabs-list="true"
-        class="openBoost-tabs-list flex border-b border-gray-300 bg-gray-50"
+        class="openBoost-tabs-list nav nav-tabs"
     >
         {{ $slot }}
+    </ul>
+    <div class="tab-content">
+        {{-- Tab panels will be rendered by tab component --}}
     </div>
 </div>

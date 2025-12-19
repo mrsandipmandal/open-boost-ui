@@ -13,34 +13,37 @@
         'class' => 'openBoost-list',
     ]) }}
 >
-    <ul
-        data-openboost-list-items="true"
-        class="openBoost-list-items space-y-2 mb-4"
-    >
+    <div class="list-group" data-openboost-list-items="true">
         {{ $slot }}
-    </ul>
+    </div>
 
     <nav
         data-openboost-list-pagination="true"
-        class="openBoost-list-pagination flex items-center justify-center gap-1 mt-4"
+        class="openBoost-list-pagination mt-4"
         aria-label="Pagination"
     >
-        <button
-            type="button"
-            data-openboost-list-prev="true"
-            class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label="Previous page"
-        >
-            Previous
-        </button>
-        <div data-openboost-list-pages="true" class="flex gap-1"></div>
-        <button
-            type="button"
-            data-openboost-list-next="true"
-            class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-            aria-label="Next page"
-        >
-            Next
-        </button>
+        <ul class="pagination justify-content-center">
+            <li class="page-item">
+                <button
+                    type="button"
+                    data-openboost-list-prev="true"
+                    class="page-link"
+                    aria-label="Previous page"
+                >
+                    Previous
+                </button>
+            </li>
+            <div data-openboost-list-pages="true" class="pagination justify-content-center"></div>
+            <li class="page-item">
+                <button
+                    type="button"
+                    data-openboost-list-next="true"
+                    class="page-link"
+                    aria-label="Next page"
+                >
+                    Next
+                </button>
+            </li>
+        </ul>
     </nav>
 </div>

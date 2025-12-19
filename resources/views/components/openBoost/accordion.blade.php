@@ -14,7 +14,7 @@
     data-openboost-accordion-multiple="{{ $allowMultiple ? '1' : '0' }}"
     data-openboost-accordion-theme="{{ $theme }}"
     {{ $attributes->merge([
-        'class' => 'openBoost-accordion',
+        'class' => 'openBoost-accordion accordion',
         'role' => 'region',
     ]) }}
 >

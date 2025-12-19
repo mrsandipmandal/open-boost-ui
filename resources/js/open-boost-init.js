@@ -64,8 +64,8 @@ const OpenBoost = {
                 const options = {
                     minimumResultsForSearch: search ? 0 : Infinity,
                     width: '100%',
-                    allowClear: true,
-                    multiple: isMultiple  // Explicitly set based on HTML attribute
+                    allowClear: true
+                    // Note: Do NOT set 'multiple' in options - Select2 detects it from the HTML attribute
                 };
                 
                 if (selectTheme) {
@@ -77,7 +77,13 @@ const OpenBoost = {
                     
                     // Ensure options are displayed
                     $(select).on('select2:opening', function() {
-                        $(this).data('select2').$dropdown.find('.select2-search__field').attr('aria-label', 'Search');
+                        const dropdown = $(this).data('select2').$dropdown;
+                        if (dropdown) {
+                            const searchField = dropdown.find('.select2-search__field');
+                            if (searchField.length) {
+                                searchField.attr('aria-label', 'Search');
+                            }
+                        }
                     });
                     
                     console.log('Select2 initialized on:', select.id, 'with options:', select.querySelectorAll('option').length, 'multiple:', isMultiple);

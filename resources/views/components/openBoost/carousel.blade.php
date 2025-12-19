@@ -12,32 +12,38 @@
     data-openboost-carousel-interval="{{ $interval }}"
     data-openboost-carousel-indicators="{{ $showIndicators ? '1' : '0' }}"
     {{ $attributes->merge([
-        'class' => 'openBoost-carousel relative w-full overflow-hidden rounded-lg shadow-lg',
+        'class' => 'openBoost-carousel carousel slide',
     ]) }}
 >
-    <div class="openBoost-carousel-slides relative w-full">
-        {{ $slot }}
-    </div>
-
     @if ($showIndicators)
     <div
         data-openboost-carousel-indicators="true"
-        class="openBoost-carousel-indicators absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2"
+        class="openBoost-carousel-indicators carousel-indicators"
     >
     </div>
     @endif
 
+    <div class="carousel-inner">
+        {{ $slot }}
+    </div>
+
     <button
         type="button"
         data-openboost-carousel-prev="true"
-        class="openBoost-carousel-prev absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded hover:bg-opacity-75 transition"
+        class="carousel-control-prev"
         aria-label="Previous slide"
     >
-        ❮
+        <span class="carousel-control-prev-icon"></span>
     </button>
     <button
         type="button"
         data-openboost-carousel-next="true"
+        class="carousel-control-next"
+        aria-label="Next slide"
+    >
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</div>
         class="openBoost-carousel-next absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded hover:bg-opacity-75 transition"
         aria-label="Next slide"
     >

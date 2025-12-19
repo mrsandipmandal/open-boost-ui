@@ -4,20 +4,17 @@
     'checked' => $checked ?? false,
 ])
 
-<label
-    data-openboost-radio="true"
-    {{ $attributes->merge([
-        'class' => 'openBoost-radio flex items-center cursor-pointer',
-    ]) }}
->
+<div class="form-check" data-openboost-radio="true">
     <input
         type="radio"
+        class="form-check-input"
         value="{{ $value }}"
+        id="{{ $value }}"
         data-openboost-radio-input="true"
         {{ $checked ? 'checked' : '' }}
-        {{ $attributes->merge([
-            'class' => 'openBoost-radio-input w-4 h-4 accent-blue-600',
-        ]) }}
+        {{ $attributes }}
     />
-    <span class="ml-2 text-sm text-gray-700">{{ $label }}</span>
-</label>
+    <label class="form-check-label" for="{{ $value }}">
+        {{ $label }}
+    </label>
+</div>

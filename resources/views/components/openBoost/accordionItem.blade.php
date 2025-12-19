@@ -3,30 +3,24 @@
     'active' => $active ?? false,
 ])
 
-<div
-    data-openboost-accordion-item="true"
-    data-openboost-accordion-item-active="{{ $active ? '1' : '0' }}"
-    {{ $attributes->merge([
-        'class' => 'openBoost-accordion-item',
-    ]) }}
->
-    <button
-        type="button"
-        data-openboost-accordion-trigger="true"
-        {{ $attributes->merge([
-            'class' => 'openBoost-accordion-trigger w-full text-left px-4 py-3 bg-gray-100 hover:bg-gray-200 border border-gray-300 font-semibold flex justify-between items-center',
-        ]) }}
-        aria-expanded="{{ $active ? 'true' : 'false' }}"
-    >
-        <span>{{ $title }}</span>
-        <span class="openBoost-accordion-icon transition-transform duration-300">▼</span>
-    </button>
+<div class="accordion-item" data-openboost-accordion-item="true" data-openboost-accordion-item-active="{{ $active ? '1' : '0' }}">
+    <h2 class="accordion-header">
+        <button
+            type="button"
+            class="accordion-button {{ $active ? '' : 'collapsed' }}"
+            data-openboost-accordion-trigger="true"
+            data-bs-toggle="collapse"
+            aria-expanded="{{ $active ? 'true' : 'false' }}"
+        >
+            {{ $title }}
+        </button>
+    </h2>
     <div
         data-openboost-accordion-content="true"
-        class="openBoost-accordion-content overflow-hidden transition-all duration-300 {{ $active ? 'block' : 'hidden' }}"
+        class="accordion-collapse collapse {{ $active ? 'show' : '' }}"
         role="region"
     >
-        <div class="px-4 py-3 border border-t-0 border-gray-300 bg-white">
+        <div class="accordion-body">
             {{ $slot }}
         </div>
     </div>

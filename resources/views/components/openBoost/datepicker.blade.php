@@ -22,7 +22,7 @@
     type="text"
     id="{{ $id }}"
     {{ $attributes->merge([
-        'class' => 'openBoost-datepicker form-input',
+        'class' => 'openBoost-datepicker form-control',
         'data-openboost-datepicker' => true,
         'data-openboost-datepicker-lib' => $lib,
         'data-openboost-datepicker-mode' => $mode,
