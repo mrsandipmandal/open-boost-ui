@@ -9,6 +9,14 @@
     \OpenBoost\UI\Services\AssetManager::require($engine);
 @endphp
 
+@push('openBoostAssets')
+    {!! \OpenBoost\UI\Services\AssetManager::getCSSFor($engine) !!}
+@endpush
+
+@push('openBoostScripts')
+    {!! \OpenBoost\UI\Services\AssetManager::getJSFor($engine) !!}
+@endpush
+
 <div
     data-openBoost-editor
     data-openBoost-editor-id="{{ $id }}"

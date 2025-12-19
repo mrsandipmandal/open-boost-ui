@@ -92,11 +92,16 @@ class AssetManager
             if (isset($assetMap[$library])) {
                 foreach ($assetMap[$library] as $css) {
                     $localPath = $basePath . $css;
-                    // If local file exists but appears to be a small placeholder file (created by installer),
-                    // prefer CDN fallback so real styles/scripts are loaded.
+                    $localFileLoaded = false;
+                    
+                    // Try to load from local first
                     if (is_file($localPath) && filesize($localPath) > 200) {
                         $html .= '<link href="' . asset('vendor/open-boost/' . $css) . '" rel="stylesheet">' . "\n";
-                    } elseif (isset($cdnMap[$library]['css'])) {
+                        $localFileLoaded = true;
+                    }
+                    
+                    // If local file wasn't loaded, try CDN fallback
+                    if (!$localFileLoaded && isset($cdnMap[$library]['css'])) {
                         foreach ($cdnMap[$library]['css'] as $cdnCss) {
                             $html .= '<link href="' . $cdnCss . '" rel="stylesheet">' . "\n";
                         }
@@ -181,9 +186,16 @@ class AssetManager
             if (isset($assetMap[$library])) {
                 foreach ($assetMap[$library] as $js) {
                     $localPath = $basePath . $js;
-                    if (is_file($localPath)) {
+                    $localFileLoaded = false;
+                    
+                    // Try to load from local first
+                    if (is_file($localPath) && filesize($localPath) > 200) {
                         $html .= '<script src="' . asset('vendor/open-boost/' . $js) . '"></script>' . "\n";
-                    } elseif (isset($cdnMap[$library]['js'])) {
+                        $localFileLoaded = true;
+                    }
+                    
+                    // If local file wasn't loaded, try CDN fallback
+                    if (!$localFileLoaded && isset($cdnMap[$library]['js'])) {
                         foreach ($cdnMap[$library]['js'] as $cdnJs) {
                             $html .= '<script src="' . $cdnJs . '"></script>' . "\n";
                         }
@@ -253,9 +265,16 @@ class AssetManager
         if (isset($assetMap[$library])) {
             foreach ($assetMap[$library] as $css) {
                 $localPath = $basePath . $css;
+                $localFileLoaded = false;
+                
+                // Try to load from local first
                 if (is_file($localPath) && filesize($localPath) > 200) {
                     $html .= '<link href="' . asset('vendor/open-boost/' . $css) . '" rel="stylesheet">' . "\n";
-                } elseif (isset($cdnMap[$library]['css'])) {
+                    $localFileLoaded = true;
+                }
+                
+                // If local file wasn't loaded, try CDN fallback
+                if (!$localFileLoaded && isset($cdnMap[$library]['css'])) {
                     foreach ($cdnMap[$library]['css'] as $cdnCss) {
                         $html .= '<link href="' . $cdnCss . '" rel="stylesheet">' . "\n";
                     }

@@ -11,6 +11,14 @@
     \OpenBoost\UI\Services\AssetManager::require($engine === 'apexcharts' ? 'apexcharts' : 'chartjs');
 @endphp
 
+@push('openBoostAssets')
+    {!! \OpenBoost\UI\Services\AssetManager::getCSSFor($engine === 'apexcharts' ? 'apexcharts' : 'chartjs') !!}
+@endpush
+
+@push('openBoostScripts')
+    {!! \OpenBoost\UI\Services\AssetManager::getJSFor($engine === 'apexcharts' ? 'apexcharts' : 'chartjs') !!}
+@endpush
+
 <div
     data-openBoost-chart
     data-openBoost-chart-id="{{ $id }}"

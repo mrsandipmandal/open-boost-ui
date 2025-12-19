@@ -101,13 +101,14 @@ class OpenBoostServiceProvider extends ServiceProvider
         // Register Blade directives for asset injection
         Blade::directive('openBoostAssets', function () {
             // Render both collected CSS links and any Blade stack pushes from components
+            // This should be placed in the <head> of your layout
             return '<?php echo \OpenBoost\UI\Services\AssetManager::getCSSLinks(); ?><?php echo $__env->yieldPushContent("openBoostAssets"); ?>';
         });
 
         Blade::directive('openBoostScripts', function () {
-            // Render collected JS links, init script, and any Blade stack pushes
-            // Also render any CSS links that may have been registered by components during body render
-            return '<?php echo \OpenBoost\UI\Services\AssetManager::getCSSLinks(); $js = \OpenBoost\UI\Services\AssetManager::getJSScripts() . \OpenBoost\UI\Services\AssetManager::getInitScript(); echo $js; echo $__env->yieldPushContent("openBoostScripts"); echo $__env->yieldPushContent("openBoostAssets"); ?>';
+            // Make sure any late CSS registrations are output before scripts
+            // Then render the JS scripts and init script
+            return '<?php echo \OpenBoost\UI\Services\AssetManager::getCSSLinks(); ?><?php echo $__env->yieldPushContent("openBoostAssets"); ?><?php $js = \OpenBoost\UI\Services\AssetManager::getJSScripts() . \OpenBoost\UI\Services\AssetManager::getInitScript(); echo $js; ?><?php echo $__env->yieldPushContent("openBoostScripts"); ?>';
         });
     }
 
