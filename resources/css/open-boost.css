@@ -4,9 +4,9 @@
  */
 
 /* Select2 Multiple Select Fixes */
-.openBoost-select.select2-hidden-accessible ~ .select2-container {
+/* .openBoost-select.select2-hidden-accessible ~ .select2-container {
     width: 100% !important;
-}
+} */
 
 .openBoost-select[multiple] ~ .select2-container--bootstrap-5 {
     width: 100% !important;

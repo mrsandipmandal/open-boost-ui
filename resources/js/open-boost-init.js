@@ -84,7 +84,8 @@ const OpenBoost = {
                     minimumResultsForSearch: search ? 0 : Infinity,
                     width: '100%',
                     allowClear: true,
-                    closeOnSelect: !isMultiple // Keep dropdown open for multiple select
+                    closeOnSelect: !isMultiple, // Keep dropdown open for multiple select
+                    containerCssClass: 'form-select-container'
                 };
                 
                 if (selectTheme) {
