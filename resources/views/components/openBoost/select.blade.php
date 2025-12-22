@@ -9,6 +9,12 @@
 
 @php
     use OpenBoost\UI\Services\AssetManager;
+    
+    // Ensure jQuery is loaded for Select2
+    if ($lib === 'select2') {
+        AssetManager::require('jquery');
+    }
+    
     AssetManager::isRequired($lib) || AssetManager::require($lib);
     
     // Build classes safely as string - ensure it's always a string
@@ -31,11 +37,11 @@
     id="{{ $id }}"
     name="{{ $attributes->get('name') }}"
     {{ $multiple ? 'multiple' : '' }}
-    data-openBoost-select="true"
-    data-openBoost-select-lib="{{ $lib }}"
-    data-openBoost-select-search="{{ $search ? '1' : '0' }}"
-    data-openBoost-select-theme="{{ $theme === 'bootstrap' ? 'bootstrap-5' : '' }}"
-    data-openBoost-select-multiple="{{ $multiple ? '1' : '0' }}"
+    data-openboost-select="true"
+    data-openboost-select-lib="{{ $lib }}"
+    data-openboost-select-search="{{ $search ? '1' : '0' }}"
+    data-openboost-select-theme="{{ $theme === 'bootstrap' ? 'bootstrap-5' : '' }}"
+    data-openboost-select-multiple="{{ $multiple ? '1' : '0' }}"
     {{ $attributes->merge(['class' => $selectClasses]) }}
 >
     @if (is_array($options) && count($options) > 0)
