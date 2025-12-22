@@ -18,11 +18,10 @@
     AssetManager::isRequired($lib) || AssetManager::require($lib);
     
     // Build classes safely as string - ensure it's always a string
-    $baseClasses = 'openBoost-select';
     $themeClasses = ($theme === 'bootstrap') 
         ? 'form-select' 
         : 'block w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50';
-    $selectClasses = $baseClasses . ' ' . $themeClasses;
+    $selectClasses = $themeClasses;
 @endphp
 
 @push('openBoostAssets')
