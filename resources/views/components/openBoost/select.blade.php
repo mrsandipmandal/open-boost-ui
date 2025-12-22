@@ -10,10 +10,8 @@
 @php
     use OpenBoost\UI\Services\AssetManager;
     
-    // Ensure jQuery is loaded for Select2
-    if ($lib === 'select2') {
-        AssetManager::require('jquery');
-    }
+    // Always require jQuery - it's a core dependency for multiple plugins
+    AssetManager::require('jquery');
     
     AssetManager::isRequired($lib) || AssetManager::require($lib);
     
