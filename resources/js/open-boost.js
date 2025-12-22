@@ -60,6 +60,7 @@ const OpenBoost = {
 
             if (lib === 'select2') {
                 const options = {
+                    width: '100%',
                     minimumResultsForSearch: search ? 0 : Infinity
                 };
                 if (selectTheme) {
