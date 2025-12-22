@@ -97,8 +97,8 @@ class AssetManager
                     $localPath = $basePath . $css;
                     $localFileLoaded = false;
                     
-                    // Try to load from local first
-                    if (is_file($localPath) && filesize($localPath) > 200) {
+                    // Try to load from local first (realistic minimum: CSS 5KB+)
+                    if (is_file($localPath) && filesize($localPath) > 5000) {
                         $html .= '<link href="' . asset('vendor/open-boost/' . $css) . '" rel="stylesheet">' . "\n";
                         $localFileLoaded = true;
                     }
@@ -163,8 +163,8 @@ class AssetManager
         // Ensure jQuery is available (local if published, otherwise CDN)
         if (!empty(self::$requiredAssets)) {
             $localJq = $basePath . 'assets/jquery/jquery.min.js';
-            // prefer CDN when local jQuery is a very small placeholder file
-            if (is_file($localJq) && filesize($localJq) > 200) {
+            // prefer CDN when local jQuery is a very small placeholder file (jQuery minified should be ~85KB+)
+            if (is_file($localJq) && filesize($localJq) > 50000) {
                 $html .= '<script src="' . asset('vendor/open-boost/assets/jquery/jquery.min.js') . '"></script>' . "\n";
             } elseif (isset($cdnMap['jquery']['js'])) {
                 foreach ($cdnMap['jquery']['js'] as $cdn) {
@@ -191,8 +191,8 @@ class AssetManager
                     $localPath = $basePath . $js;
                     $localFileLoaded = false;
                     
-                    // Try to load from local first
-                    if (is_file($localPath) && filesize($localPath) > 200) {
+                    // Try to load from local first (realistic minimum: JS 10KB+)
+                    if (is_file($localPath) && filesize($localPath) > 10000) {
                         $html .= '<script src="' . asset('vendor/open-boost/' . $js) . '"></script>' . "\n";
                         $localFileLoaded = true;
                     }
@@ -270,8 +270,8 @@ class AssetManager
                 $localPath = $basePath . $css;
                 $localFileLoaded = false;
                 
-                // Try to load from local first
-                if (is_file($localPath) && filesize($localPath) > 200) {
+                // Try to load from local first (realistic minimum: CSS 5KB+)
+                if (is_file($localPath) && filesize($localPath) > 5000) {
                     $html .= '<link href="' . asset('vendor/open-boost/' . $css) . '" rel="stylesheet">' . "\n";
                     $localFileLoaded = true;
                 }
@@ -341,7 +341,7 @@ class AssetManager
         if (isset($assetMap[$library])) {
             foreach ($assetMap[$library] as $js) {
                 $localPath = $basePath . $js;
-                if (is_file($localPath) && filesize($localPath) > 200) {
+                if (is_file($localPath) && filesize($localPath) > 10000) {
                     $html .= '<script src="' . asset('vendor/open-boost/' . $js) . '"></script>' . "\n";
                 } elseif (isset($cdnMap[$library]['js'])) {
                     foreach ($cdnMap[$library]['js'] as $cdnJs) {
