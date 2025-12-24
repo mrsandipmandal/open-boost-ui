@@ -3,6 +3,17 @@
  * Include this after all library JS files are loaded
  */
 
+// Ensure jQuery is available globally for plugins that depend on it
+// This should be loaded BEFORE any jQuery plugins
+(function() {
+    if (typeof jQuery !== 'undefined' && typeof window.$ === 'undefined') {
+        window.$ = jQuery;
+    }
+    if (typeof jQuery !== 'undefined' && typeof window.jQuery === 'undefined') {
+        window.jQuery = jQuery;
+    }
+})();
+
 const OpenBoost = {
     initDropdowns() {
         document.querySelectorAll('[data-openBoost-dropdown]').forEach(dropdown => {
@@ -571,7 +582,9 @@ const OpenBoost = {
         
         console.group('Dependencies');
         console.log('jQuery ($):', typeof $ !== 'undefined' ? '✅ Loaded' : '❌ NOT LOADED');
-        console.log('Select2:', typeof $ !== 'undefined' && $.fn.select2 ? '✅ Loaded' : '❌ NOT LOADED');
+        console.log('jQuery.fn.select2:', typeof $ !== 'undefined' && $.fn.select2 ? '✅ Loaded' : '❌ NOT LOADED');
+        console.log('DataTables:', typeof $ !== 'undefined' && $.fn.dataTable ? '✅ Loaded' : '❌ NOT LOADED');
+        console.log('jsTree:', typeof $ !== 'undefined' && $.fn.jstree ? '✅ Loaded' : '❌ NOT LOADED');
         console.log('Choices:', typeof Choices !== 'undefined' ? '✅ Loaded' : '❌ NOT LOADED');
         console.log('Flatpickr:', typeof flatpickr !== 'undefined' ? '✅ Loaded' : '❌ NOT LOADED');
         console.log('Chart.js:', typeof Chart !== 'undefined' ? '✅ Loaded' : '❌ NOT LOADED');
@@ -640,3 +653,27 @@ if (typeof window.select2Focus === 'undefined') {
         }
     };
 }
+
+// Ensure jQuery is available for external plugins/libraries
+// Call this function if jQuery plugins fail to load due to missing $
+window.ensureJQuery = function() {
+    if (typeof jQuery !== 'undefined') {
+        window.$ = jQuery;
+        window.jQuery = jQuery;
+        console.log('✅ jQuery exposed globally for plugins');
+        return true;
+    } else {
+        console.error('❌ jQuery is not available');
+        return false;
+    }
+};
+
+// Auto-expose jQuery if it becomes available
+document.addEventListener('DOMContentLoaded', function() {
+    window.ensureJQuery();
+}, { once: true });
+
+// Also try to expose on load
+window.addEventListener('load', function() {
+    window.ensureJQuery();
+}, { once: true });
