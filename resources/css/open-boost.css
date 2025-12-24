@@ -8,6 +8,31 @@
     width: 100% !important;
 } */
 
+/* Select2 Container Visibility and Styling */
+.select2-container {
+    display: block !important;
+    visibility: visible !important;
+    width: 100% !important;
+}
+
+.select2-container--open {
+    z-index: 1050;
+}
+
+.select2-container .select2-selection {
+    border: 1px solid #ced4da !important;
+    border-radius: 0.375rem !important;
+    padding: 0.375rem 0.75rem !important;
+    min-height: 38px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.select2-container .select2-selection:focus {
+    border-color: #80bdff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+}
+
 .openBoost-select[multiple] ~ .select2-container--bootstrap-5 {
     width: 100% !important;
 }

@@ -171,6 +171,19 @@ const OpenBoost = {
                 const chartData = JSON.parse(dataStr);
 
                 if (engine === 'chartjs' && typeof Chart !== 'undefined') {
+                    // Ensure element is properly rendered and visible
+                    if (el.offsetParent === null) {
+                        console.warn('Chart element is not visible');
+                        return;
+                    }
+                    // Ensure canvas has a 2D context
+                    if (el.tagName === 'CANVAS') {
+                        const ctx = el.getContext('2d');
+                        if (!ctx) {
+                            console.error('Cannot acquire 2D context from canvas');
+                            return;
+                        }
+                    }
                     new Chart(el, {
                         type: type,
                         data: chartData
@@ -182,7 +195,7 @@ const OpenBoost = {
                 console.error('Chart initialization error:', e);
             }
         });
-    },
+    }
 
     initEditors() {
         document.querySelectorAll('[data-openboost-editor]').forEach(wrapper => {
@@ -394,7 +407,7 @@ const OpenBoost = {
             const track = toggle.querySelector('[data-openboost-toggle-track]');
             const thumb = toggle.querySelector('[data-openboost-toggle-thumb]');
 
-            if (!input) return;
+            if (!input || !track || !thumb) return;
 
             const updateToggle = () => {
                 if (input.checked) {
