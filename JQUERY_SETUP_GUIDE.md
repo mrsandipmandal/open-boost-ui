@@ -11,9 +11,25 @@ External libraries like DataTables, jsTree, and Form Wizard require jQuery to be
 
 Your HTML page must load scripts in this exact order:
 
-### 1. jQuery First (Required for all plugins)
+### 0. jQuery Loader (NEW - Recommended)
+Include this **BEFORE jQuery and ALL other scripts**:
+```html
+<script src="/path/to/jquery-loader.js"></script>
+```
+
+This script will:
+- Automatically detect when jQuery loads
+- Expose jQuery globally as `$` and `jQuery`
+- Handle async jQuery loading gracefully
+
+### 1. jQuery (Required for all plugins)
 ```html
 <script src="/path/to/jquery.min.js"></script>
+```
+
+**OR if jQuery is loaded from CDN:**
+```html
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 ```
 
 ### 2. jQuery Plugins (In any order)
@@ -97,6 +113,10 @@ Load any jQuery-dependent plugins you need:
     <!-- Your HTML content here -->
 
     <!-- JavaScript Files in Correct Order -->
+    
+    <!-- 0. jQuery Loader (FIRST - handles jQuery exposure) -->
+    <script src="jquery-loader.js"></script>
+
     <!-- 1. jQuery FIRST -->
     <script src="jquery.min.js"></script>
 
@@ -134,22 +154,66 @@ Load any jQuery-dependent plugins you need:
    console.log(typeof $)       // Should be 'function'
    ```
 
-2. **Manually expose jQuery:**
-   If jQuery loads but `$` is not defined, run in console:
+2. **Check the loader is working:**
+   ```javascript
+   console.log(window.jQueryLoader)  // Should show an object with methods
+   window.jQueryLoader.isReady()     // Should return true if jQuery is ready
+   ```
+
+3. **Manually expose jQuery (if needed):**
    ```javascript
    window.ensureJQuery()  // This will expose $ and jQuery globally
    ```
 
-3. **Check script URLs:**
-   Make sure all script paths in your HTML are correct and files actually exist.
+4. **Check script loading order in Network tab:**
+   - Open DevTools → Network tab
+   - Look at the order scripts load
+   - `jquery-loader.js` should load FIRST
+   - `jquery.min.js` should load SECOND
+   - jQuery plugins should load AFTER jQuery
 
-4. **Check console for load errors:**
-   Look for 404 errors or CORS errors on specific scripts.
+5. **Check for console errors:**
+   - Look for 404 errors on specific scripts
+   - Check for CORS errors
+   - Look for Content Security Policy errors
 
-5. **Use OpenBoost Debug Helper:**
-   ```javascript
-   OpenBoost.debug()  // Shows what dependencies are loaded
-   ```
+### Chart Context Errors
+
+If you see: `Failed to create chart: can't acquire context from the given item`
+
+1. **Ensure chart element is visible** - Hidden elements can't create canvas context
+2. **Verify canvas tag** - Chart elements should be `<canvas>` or `<div>` with proper dimensions
+3. **Check height/width** - Canvas elements need explicit width/height attributes or CSS
+
+Example:
+```html
+<canvas id="myChart" width="400" height="100"></canvas>
+<!-- OR -->
+<div id="myChart" style="width: 400px; height: 100px;"></div>
+```
+
+### Toggle Errors
+
+If you see: `Cannot read properties of null (reading 'classList')`
+
+This happens when toggle HTML structure is incomplete. Ensure you have:
+```html
+<div data-openboost-toggle>
+    <input data-openboost-toggle-input type="checkbox">
+    <div data-openboost-toggle-track></div>
+    <div data-openboost-toggle-thumb></div>
+</div>
+```
+
+All three elements are required.
+
+### Template Customizer or Pickr Errors
+
+These are from external customizer scripts and can usually be ignored if you're not using those features. They don't affect OpenBoost functionality.
+
+### CSP (Content Security Policy) Errors
+
+If you see eval() errors from SimpleMDE or other libraries, you may need to adjust your Content Security Policy to allow `'unsafe-eval'` if you control the CSP headers.
 
 ## What OpenBoost Does
 
