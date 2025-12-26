@@ -394,6 +394,9 @@ const OpenBoost = {
             if (!input || !track || !thumb) return;
 
             const updateToggle = () => {
+                // Extra safety check in case elements are removed
+                if (!track || !thumb) return;
+                
                 if (input.checked) {
                     track.classList.add('bg-blue-500');
                     track.classList.remove('bg-gray-300');

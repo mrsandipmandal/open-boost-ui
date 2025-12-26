@@ -172,8 +172,16 @@ class AssetManager
                 }
             }
 
-            // CRITICAL: Load jQuery loader immediately after jQuery to ensure $ is available
-            $html .= '<script src="' . asset('vendor/open-boost/js/jquery-loader.js') . '"></script>' . "\n";
+            // Immediately expose jQuery globally after it loads
+            $html .= '<script>' . "\n";
+            $html .= '(function() {' . "\n";
+            $html .= '  if (typeof jQuery !== "undefined" && !window.$) {' . "\n";
+            $html .= '    window.$ = jQuery;' . "\n";
+            $html .= '    window.jQuery = jQuery;' . "\n";
+            $html .= '    console.log("✅ jQuery is available globally as $ and jQuery");' . "\n";
+            $html .= '  }' . "\n";
+            $html .= '})();' . "\n";
+            $html .= '</script>' . "\n";
         }
 
         $assetMap = [
