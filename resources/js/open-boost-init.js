@@ -94,9 +94,7 @@ const OpenBoost = {
                 const options = {
                     minimumResultsForSearch: search ? 0 : Infinity,
                     width: '100%',
-                    allowClear: true,
-                    closeOnSelect: !isMultiple, // Keep dropdown open for multiple select
-                    containerCssClass: 'form-select-container'
+                    allowClear: true
                 };
 
                 if (selectTheme) {
@@ -104,33 +102,8 @@ const OpenBoost = {
                 }
 
                 try {
-                    // Initialize Select2 with proper configuration
+                    // Initialize Select2 with default configuration only
                     $(select).select2(options);
-
-                    // Verify multiple mode is active
-                    const select2Instance = $(select).data('select2');
-                    if (select2Instance && isMultiple) {
-                        // Force the container to show multiple mode
-                        if (select2Instance.$container) {
-                            select2Instance.$container.addClass('select2-container--multiple');
-                        }
-                    }
-
-                    // Ensure options are displayed
-                    $(select).on('select2:opening', function() {
-                        const dropdown = $(this).data('select2').$dropdown;
-                        if (dropdown) {
-                            const searchField = dropdown.find('.select2-search__field');
-                            if (searchField.length) {
-                                searchField.attr('aria-label', 'Search');
-                            }
-                        }
-                    });
-
-                    // Handle change event to show selected values
-                    $(select).on('change', function() {
-                        console.log('Select2 change event - selected values:', $(this).val());
-                    });
 
                     console.log('Select2 initialized on:', select.id, 'name:', select.name, 'options:', select.querySelectorAll('option').length, 'multiple:', isMultiple, 'classes:', select.className);
                 } catch (e) {
