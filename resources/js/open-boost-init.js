@@ -75,13 +75,13 @@ const OpenBoost = {
                 const hasMultipleAttr = select.hasAttribute('multiple');
                 const hasMultipleName = select.name && select.name.endsWith('[]');
                 const isMultiple = hasMultipleAttr || hasMultipleName;
-                
+
                 // CRITICAL: Ensure the multiple attribute is set BEFORE Select2 initialization
                 if (isMultiple) {
                     select.setAttribute('multiple', 'multiple');
                     select.multiple = true;
                 }
-                
+
                 // Destroy existing Select2 instance if it exists
                 if ($(select).hasClass('select2-hidden-accessible')) {
                     try {
@@ -90,7 +90,7 @@ const OpenBoost = {
                         // Ignore destroy errors
                     }
                 }
-                
+
                 const options = {
                     minimumResultsForSearch: search ? 0 : Infinity,
                     width: '100%',
@@ -98,15 +98,15 @@ const OpenBoost = {
                     closeOnSelect: !isMultiple, // Keep dropdown open for multiple select
                     containerCssClass: 'form-select-container'
                 };
-                
+
                 if (selectTheme) {
                     options.theme = selectTheme;
                 }
-                
+
                 try {
                     // Initialize Select2 with proper configuration
                     $(select).select2(options);
-                    
+
                     // Verify multiple mode is active
                     const select2Instance = $(select).data('select2');
                     if (select2Instance && isMultiple) {
@@ -115,7 +115,7 @@ const OpenBoost = {
                             select2Instance.$container.addClass('select2-container--multiple');
                         }
                     }
-                    
+
                     // Ensure options are displayed
                     $(select).on('select2:opening', function() {
                         const dropdown = $(this).data('select2').$dropdown;
@@ -126,12 +126,12 @@ const OpenBoost = {
                             }
                         }
                     });
-                    
+
                     // Handle change event to show selected values
                     $(select).on('change', function() {
                         console.log('Select2 change event - selected values:', $(this).val());
                     });
-                    
+
                     console.log('Select2 initialized on:', select.id, 'name:', select.name, 'options:', select.querySelectorAll('option').length, 'multiple:', isMultiple, 'classes:', select.className);
                 } catch (e) {
                     console.error('Select2 initialization error:', e);
@@ -389,7 +389,7 @@ const OpenBoost = {
                     trigger.dataset.openboostTabActive = '1';
                     trigger.classList.add('border-blue-500', 'text-blue-600');
                     trigger.classList.remove('border-transparent', 'text-gray-600');
-                    
+
                     if (panels[index]) {
                         panels[index].classList.remove('hidden');
                         panels[index].dataset.openboostTabActive = '1';
@@ -579,7 +579,7 @@ const OpenBoost = {
     // Debug helper - call OpenBoost.debug() in console to check setup
     debug() {
         console.group('🔍 OpenBoost Debug Info');
-        
+
         console.group('Dependencies');
         console.log('jQuery ($):', typeof $ !== 'undefined' ? '✅ Loaded' : '❌ NOT LOADED');
         console.log('jQuery.fn.select2:', typeof $ !== 'undefined' && $.fn.select2 ? '✅ Loaded' : '❌ NOT LOADED');
@@ -616,15 +616,39 @@ const OpenBoost = {
     }
 };
 
-// Auto-initialize when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log('🚀 OpenBoost: Initializing components...');
-        OpenBoost.initAll();
-    });
-} else {
+// Auto-initialize when DOM is ready AND jQuery is available
+function initializeOpenBoost() {
     console.log('🚀 OpenBoost: Initializing components...');
     OpenBoost.initAll();
+}
+
+// Check if jQuery loader is available (for proper jQuery readiness)
+if (typeof window.jQueryLoader !== 'undefined') {
+    // Use jQuery loader to ensure jQuery is ready before initializing
+    window.jQueryLoader.onReady(function() {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeOpenBoost);
+        } else {
+            initializeOpenBoost();
+        }
+    });
+} else {
+    // Fallback: Just check for jQuery directly
+    function checkAndInit() {
+        if (typeof jQuery !== 'undefined' && jQuery) {
+            window.$ = jQuery;
+            window.jQuery = jQuery;
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initializeOpenBoost);
+            } else {
+                initializeOpenBoost();
+            }
+        } else {
+            // Retry in 100ms
+            setTimeout(checkAndInit, 100);
+        }
+    }
+    checkAndInit();
 }
 
 // Export for manual initialization

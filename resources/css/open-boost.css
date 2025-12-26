@@ -4,9 +4,9 @@
  */
 
 /* Select2 Multiple Select Fixes */
-/* .openBoost-select.select2-hidden-accessible ~ .select2-container {
+.openBoost-select.select2-hidden-accessible ~ .select2-container {
     width: 100% !important;
-} */
+}
 
 /* Select2 Container Visibility and Styling */
 .select2-container {
@@ -59,7 +59,6 @@
     text-decoration: underline;
 }
 
-/* Ensure proper display of dropdown for multiple selects */
 .select2-container--open .select2-dropdown--below {
     border-top: none;
 }
